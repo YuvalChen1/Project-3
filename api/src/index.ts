@@ -4,6 +4,8 @@ import { logger } from "./logger";
 import jsonwebtoken from "jsonwebtoken";
 import dotenv from "dotenv";
 import cors from "cors";
+import { vacationsRouter } from "./vacations/route";
+import { authRouter } from "./auth/route";
 
 dotenv.config();
 
@@ -14,11 +16,11 @@ app.get("/health-check", function (req, res, next) {
   res.send(`API IS OK ${new Date().toISOString()}`);
 });
 
-// app.use("/customers", customersRouter);
-// app.use("/auth", authRouter);
+app.use("/vacations", vacationsRouter);
+app.use("/auth", authRouter);
 // app.use("/products", productsRouter);
 // app.use("/cart", cartRouter);
-// app.use(verifyAuthentication);
+app.use(verifyAuthentication);
 // app.use("/user", userRouter);
 // app.use("/countries", countriesRouter);
 
