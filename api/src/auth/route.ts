@@ -58,6 +58,7 @@ function middlewareSignIn(req, res, next) {
 
 authRouter.post("/sign-up", middlewareSignIn, async function (req, res, next) {
   try {
+    console.log("sign up payload !!!!!!",req.body);
     await signUp(req.body);
     return res.json({ message: "user successfully added!" });
   } catch (error) {
