@@ -20,7 +20,7 @@ app.use("/vacations", vacationsRouter);
 app.use("/auth", authRouter);
 // app.use("/products", productsRouter);
 // app.use("/cart", cartRouter);
-app.use(verifyAuthentication);
+// app.use(verifyAuthentication);
 // app.use("/user", userRouter);
 // app.use("/countries", countriesRouter);
 
