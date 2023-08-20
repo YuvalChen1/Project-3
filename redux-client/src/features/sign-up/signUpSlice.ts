@@ -1,6 +1,5 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { userSignUp } from "./signUpAPI"
-import { createSlice } from "@reduxjs/toolkit"
 
 interface ISignUp {
   email: string
@@ -9,30 +8,49 @@ interface ISignUp {
   lastName: string
 }
 
-export const signUpUser = createAsyncThunk(
-  "user/signUp",
-  async (signUpPayload: ISignUp, { rejectWithValue }) => {
-    try {
-      const response = await userSignUp(signUpPayload)
-      return response.data // Return the response data if signup is successful
-    } catch (error: any) {
-      // Extract relevant information from the AxiosError object
-      const errorData = {
-        message: error.message,
-        response: error.response,
-      }
-      return rejectWithValue(errorData) // Return the extracted error data
+export interface ISignUpResponse {
+  success: boolean
+}
+
+export const signUpUser = createAsyncThunk<
+  ISignUpResponse,
+  ISignUp,
+  {
+    rejectValue: { message: string }
+  }
+>("user/signUp", async (signUpPayload: ISignUp, { rejectWithValue }) => {
+  try {
+    const response = await userSignUp(signUpPayload)
+    if (response.message === "user successfully added!") {
+      return response
+    } else {
+      return rejectWithValue({ message: "Sign-up failed" })
     }
-  },
-)
+  } catch (error: any) {
+    const errorData = {
+      message: error.message,
+      response: error.response,
+    }
+    return rejectWithValue(errorData)
+  }
+})
+interface SignUpState {
+  user: ISignUpResponse | null
+  loading: boolean
+  error: string | null
+  success: boolean
+}
+
+const initialState: SignUpState = {
+  user: null,
+  loading: false,
+  error: null,
+  success: false,
+}
 
 const signUpSlice = createSlice({
   name: "signUp",
-  initialState: {
-    user: null,
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -43,10 +61,12 @@ const signUpSlice = createSlice({
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.loading = false
         state.user = action.payload
+        state.success = true
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false
         state.error = typeof action === "string" ? action : null
+        state.success = false
       })
   },
 })

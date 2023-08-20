@@ -90,3 +90,4 @@
 {"level":"error","message":"jwt must be provided","service":"api"}
 {"level":"error","message":"jwt must be provided","service":"api"}
 {"level":"error","message":"jwt must be provided","service":"api"}
+{"level":"info","message":"Api is running on Port 4000","service":"api"}
