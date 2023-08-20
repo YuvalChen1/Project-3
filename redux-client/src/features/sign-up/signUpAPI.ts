@@ -17,11 +17,8 @@ export async function userSignUp(signUpPayload: ISignUp) {
       firstName: signUpPayload.firstName,
       lastName: signUpPayload.lastName,
     })
-    console.log("my result !!!!!!!!!!!!!!!!", result)
-
     return result.data // Return the response data
   } catch (error: any) {
-    console.log("my result !!!!!!!!!!!!!!!!", error.message)
     console.error("Sign-Up failed:", error)
     throw error // Rethrow the error for the caller to handle
   }
