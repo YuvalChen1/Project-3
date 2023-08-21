@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { userLogin } from "./loginAPI"
 
-type LoginCredentials = {
+interface LoginCredentials {
   email: string
   password: string
 }
@@ -19,16 +19,16 @@ export const loginUser = createAsyncThunk(
 )
 
 interface ILogin {
-  user: { email: string; password: string }
+  user: null | LoginCredentials
   loading: boolean
-  error: string | null
+  error: undefined | string
   status: "idle" | "loading" | "failed" | "fulfilled"
 }
 
 const initState: ILogin = {
-  user: { email: "", password: "" },
+  user: null,
   loading: false,
-  error: null as string | null,
+  error: undefined,
   status: "idle",
 }
 
@@ -40,7 +40,7 @@ const loginSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true
-        state.error = null
+        state.error = undefined
         state.status = "loading"
       })
       .addCase(loginUser.fulfilled, (state, action) => {
@@ -50,7 +50,7 @@ const loginSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false
-        state.error = action.payload as string | null
+        state.error = (action.error as Error | undefined)?.message
         state.status = "failed"
       })
   },

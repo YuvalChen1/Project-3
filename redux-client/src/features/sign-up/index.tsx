@@ -5,10 +5,11 @@ import { Button } from "primereact/button"
 import { Card } from "primereact/card"
 import { Toast } from "primereact/toast"
 import { signUpUser } from "./signUpSlice"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./SignUp.css"
 
 function SignUp() {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({
     email: "",
@@ -29,17 +30,16 @@ function SignUp() {
     e.preventDefault()
 
     const responseAction = await dispatch(signUpUser(formData))
-    const response = responseAction.payload
 
-    if (
-      typeof response === "string" &&
-      response === "user successfully added!"
-    ) {
+    if (signUpUser.fulfilled.match(responseAction)) {
       toast.current?.show({
         severity: "success",
         summary: "Sign Up Successful",
         detail: "You have successfully signed up!",
       })
+      setTimeout(() => {
+        navigate("/login")
+      }, 1500)
     } else {
       toast.current?.show({
         severity: "error",

@@ -1,4 +1,3 @@
-// const express = require("express")
 import express, { Request, Response, NextFunction } from "express";
 import { logger } from "./logger";
 import jsonwebtoken from "jsonwebtoken";
@@ -6,19 +5,25 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { vacationsRouter } from "./vacations/route";
 import { authRouter } from "./auth/route";
+import { addRequestId } from "./middleware/addRequestId";
+import { addRequestStarted } from "./middleware/addRequestStarted";
+import { addRequestFinished } from "./middleware/addRequestFinished";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(addRequestId);
+app.use(addRequestStarted);
+app.use(addRequestFinished);
 app.get("/health-check", function (req, res, next) {
   res.send(`API IS OK ${new Date().toISOString()}`);
 });
 
-app.use("/vacations", vacationsRouter);
 app.use("/auth", authRouter);
-// app.use(verifyAuthentication);
+app.use(verifyAuthentication);
+app.use("/vacations", vacationsRouter);
 // app.use("/user", userRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -33,6 +38,7 @@ app.listen(process.env.PORT, () => {
 
 function verifyAuthentication(req: Request, res: Response, next) {
   const { authorization: token } = req.headers;
+
   jsonwebtoken.verify(token, process.env.SECRET, function (err, decoded) {
     if (err) {
       console.log(
