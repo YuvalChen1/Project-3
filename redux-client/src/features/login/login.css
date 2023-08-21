@@ -1,15 +1,16 @@
 .login-container {
+  min-height: 100vh;
+  background-image: url("https://e0.pxfuel.com/wallpapers/298/983/desktop-wallpaper-travel-around-world-travel-laptop-background-travel-and-tourism.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .login-form {
-  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  border-radius: 10px;
 }

@@ -5,6 +5,7 @@ import { Button } from "primereact/button"
 import { Card } from "primereact/card"
 import { Toast } from "primereact/toast"
 import { signUpUser } from "./signUpSlice"
+import { Link } from "react-router-dom"
 import "./SignUp.css"
 
 function SignUp() {
@@ -30,7 +31,10 @@ function SignUp() {
     const responseAction = await dispatch(signUpUser(formData))
     const response = responseAction.payload
 
-    if (response) {
+    if (
+      typeof response === "string" &&
+      response === "user successfully added!"
+    ) {
       toast.current?.show({
         severity: "success",
         summary: "Sign Up Successful",
@@ -101,6 +105,9 @@ function SignUp() {
               type="submit"
               disabled={loading}
             />
+            <p style={{ marginTop: "50px", textAlign: "center" }}>
+              Already have an account ? <Link to="/login">Login</Link>
+            </p>
           </form>
         </div>
       </Card>

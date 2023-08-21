@@ -4,21 +4,31 @@ import { useAppDispatch } from "../../app/hooks"
 import { InputText } from "primereact/inputtext"
 import { Button } from "primereact/button"
 import { Card } from "primereact/card"
-import { Messages } from "primereact/messages"
+import { Link, useNavigate } from "react-router-dom"
 import "./login.css"
 
 function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const handleLogin = () => {
-    dispatch(loginUser({ email, password }))
+  const handleLogin = async () => {
+    try {
+      const response = await dispatch(loginUser({ email, password }))
+      if (loginUser.fulfilled.match(response)) {
+        localStorage.setItem("token", response.payload.token)
+        navigate("/app/vacations")
+      } else {
+        console.error("Login failed:", response.payload)
+      }
+    } catch (error) {
+      console.error("Login failed:", error)
+    }
   }
 
   return (
-    <div
-      className="p-d-flex p-jc-center p-ai-center login-container">
+    <div className="p-d-flex p-jc-center p-ai-center login-container">
       <Card className="login-form" title="Login" style={{ width: "350px" }}>
         <div className="p-fluid">
           <div className="p-field">
@@ -46,6 +56,9 @@ function Login() {
             onClick={handleLogin}
           />
         </div>
+        <p style={{ marginTop: "50px", textAlign: "center" }}>
+          Don't have an account? <Link to="/signUp">Sign up</Link>
+        </p>
       </Card>
     </div>
   )

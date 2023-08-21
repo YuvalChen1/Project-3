@@ -12,28 +12,26 @@ export interface ISignUpResponse {
   success: boolean
 }
 
-export const signUpUser = createAsyncThunk<
-  ISignUpResponse,
-  ISignUp,
-  {
-    rejectValue: { message: string }
-  }
->("user/signUp", async (signUpPayload: ISignUp, { rejectWithValue }) => {
-  try {
-    const response = await userSignUp(signUpPayload)
-    if (response.message === "user successfully added!") {
-      return response
-    } else {
-      return rejectWithValue({ message: "Sign-up failed" })
+export const signUpUser = createAsyncThunk<ISignUpResponse, ISignUp>(
+  "user/signUp",
+  async (signUpPayload: ISignUp, { rejectWithValue }) => {
+    try {
+      const response = await userSignUp(signUpPayload)
+      if (response.message === "user successfully added!") {
+        return response.message
+      } else {
+        // return rejectWithValue({ message: "Sign-up failed" })
+        throw new Error("Something Went Wrong")
+      }
+    } catch (error: any) {
+      const errorData = {
+        message: error.message,
+        response: error.response,
+      }
+      return rejectWithValue(errorData)
     }
-  } catch (error: any) {
-    const errorData = {
-      message: error.message,
-      response: error.response,
-    }
-    return rejectWithValue(errorData)
-  }
-})
+  },
+)
 interface SignUpState {
   user: ISignUpResponse | null
   loading: boolean

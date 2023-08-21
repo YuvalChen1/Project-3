@@ -1,0 +1,26 @@
+.vacation-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  /* background-image: url("https://e0.pxfuel.com/wallpapers/298/983/desktop-wallpaper-travel-around-world-travel-laptop-background-travel-and-tourism.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; */
+}
+
+.vacation-card {
+  flex: 1;
+  border: 1px solid black;
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.p-card-title {
+  text-align: center;
+}
+
+.vacation-card:hover {
+  transform: translateY(-4px);
+}

@@ -1,12 +1,19 @@
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
-{"level":"error","message":"jwt must be provided","service":"api"}
+{"level":"error","message":"User Already Exists","service":"api"}
+{"level":"error","message":"User Already Exists","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"User not exist","service":"api"}
+{"level":"error","message":"","service":"api"}

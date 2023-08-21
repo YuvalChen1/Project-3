@@ -18,11 +18,8 @@ app.get("/health-check", function (req, res, next) {
 
 app.use("/vacations", vacationsRouter);
 app.use("/auth", authRouter);
-// app.use("/products", productsRouter);
-// app.use("/cart", cartRouter);
 // app.use(verifyAuthentication);
 // app.use("/user", userRouter);
-// app.use("/countries", countriesRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error({ message: err.message });
