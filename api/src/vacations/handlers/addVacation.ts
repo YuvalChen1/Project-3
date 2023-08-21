@@ -10,7 +10,8 @@ interface IVacation {
 }
 
 async function addVacationApi(vacation: IVacation) {
-  const query = "INSERT INTO `vacations_table` VALUES (?,?,?,?,?,?);";
+  const query =
+    "INSERT INTO vacations.`vacations_table`(destination, description, startDate, endDate, price, image) VALUES (?,?,?,?,?,?);";
   const results = await pool.execute(query, [
     vacation.destination,
     vacation.description,

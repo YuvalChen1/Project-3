@@ -8,6 +8,7 @@ import { authRouter } from "./auth/route";
 import { addRequestId } from "./middleware/addRequestId";
 import { addRequestStarted } from "./middleware/addRequestStarted";
 import { addRequestFinished } from "./middleware/addRequestFinished";
+import { followersRouter } from "./followers/route";
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ app.get("/health-check", function (req, res, next) {
 app.use("/auth", authRouter);
 app.use(verifyAuthentication);
 app.use("/vacations", vacationsRouter);
-// app.use("/user", userRouter);
+app.use("/followers", followersRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error({ message: err.message });
@@ -52,6 +53,7 @@ function verifyAuthentication(req: Request, res: Response, next) {
     } else {
       (req as any).currentUserName = decoded.userName;
       (req as any).currentUserId = decoded.id;
+
       console.log(
         `${new Date().toISOString()} => requestId: ${res.getHeader(
           "x-request-id"

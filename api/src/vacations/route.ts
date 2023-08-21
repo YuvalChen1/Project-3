@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
 import { logger } from "../logger";
-import jsonwebtoken from "jsonwebtoken";
 import zod from "zod";
 import { getAllVacationsApi } from "./handlers/getAllVacations";
 import { addVacationApi } from "./handlers/addVacation";

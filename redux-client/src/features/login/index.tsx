@@ -21,6 +21,7 @@ function Login() {
       const response = await dispatch(loginUser({ email, password }))
       if (loginUser.fulfilled.match(response)) {
         localStorage.setItem("token", response.payload.token)
+        localStorage.setItem("userId", response.payload.userId)
         navigate("/vacations")
       } else {
         toast.current?.show({

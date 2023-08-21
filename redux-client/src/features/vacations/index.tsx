@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { getVacations } from "./vacationsSlice"
+import { IFollower, addSubscriberToDB, getVacations } from "./vacationsSlice"
 import { Card } from "primereact/card"
 import { Button } from "primereact/button"
 import "./Vacations.css" // Import a CSS file for styling
@@ -10,9 +10,13 @@ export default function Vacations() {
   const dispatch = useAppDispatch()
   const vacations = useAppSelector((state) => state.vacations.vacation)
   const status = useAppSelector((state) => state.vacations.status)
+  const userIdString = localStorage.getItem("userId")
+  const userId = Number(userIdString)
 
   useEffect(() => {
     dispatch(getVacations())
+    console.log(userId)
+    console.log(typeof userId)
   }, [dispatch])
 
   return (
@@ -47,18 +51,14 @@ export default function Vacations() {
                   <strong>End Date:</strong>{" "}
                   {new Date(v.endDate).toLocaleString()}
                 </p>
-                <p>
-                  <strong>Are you Subscribed:</strong>{" "}
-                  {v.isSubscribed ? "Yes" : "No"}
-                </p>
-                <p>
-                  <strong>Number of Subscribers:</strong>{" "}
-                  {v.numberOfSubscribers}
-                </p>
                 <Button
                   label="Subscribe"
                   icon="pi pi-heart"
-                  onClick={() => dispatch(vacationSubscribe(v.id))}
+                  onClick={() =>
+                    dispatch(
+                      addSubscriberToDB({ userId: userId, vacationId: v.id }),
+                    )
+                  }
                 />
               </Card>
             </div>

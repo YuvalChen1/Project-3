@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { getVacationsApi } from "./vacationsAPI"
+import { addSubscriber, getVacationsApi } from "./vacationsAPI"
+import { useAppSelector } from "../../app/hooks"
 
 export const getVacations = createAsyncThunk(
   "vacations/vacationsAsync",
@@ -13,6 +14,25 @@ export const getVacations = createAsyncThunk(
     }
   },
 )
+
+export interface IFollower {
+  userId: number
+  vacationId: number
+}
+
+export const addSubscriberToDB = createAsyncThunk(
+  "followers/followersAsync",
+  async ({ userId, vacationId }: IFollower) => {
+    try {
+      const response = await addSubscriber(userId, vacationId)
+      if (!response) throw new Error("")
+      return response.data
+    } catch (error) {
+      throw new Error("Something Went Wrong")
+    }
+  },
+)
+
 interface IVacation {
   vacation: Array<{
     id: number
@@ -22,8 +42,6 @@ interface IVacation {
     endDate: Date
     price: number
     image: string
-    isSubscribed: boolean
-    numberOfSubscribers: number
   }>
   status: "idle" | "loading" | "failed"
 }
@@ -38,8 +56,6 @@ const initialState: IVacation = {
       endDate: new Date(),
       price: 0,
       image: "",
-      isSubscribed: false,
-      numberOfSubscribers: 0,
     },
   ],
   status: "idle",
@@ -50,13 +66,13 @@ const vacationSlice = createSlice({
   initialState,
   reducers: {
     vacationSubscribe: (state, action: PayloadAction<number>) => {
-      const vacationId = action.payload
-      const vacation = state.vacation.find((v) => v.id === vacationId)
+      // const vacationId = action.payload
+      // const vacation = state.vacation.find((v) => v.id === vacationId)
 
-      if (vacation) {
-        vacation.isSubscribed = true
-        vacation.numberOfSubscribers += 1
-      }
+      // if (vacation) {
+      //   vacation.isSubscribed = true
+      //   vacation.numberOfSubscribers += 1
+      // }
     },
   },
   extraReducers: (builder) => {
@@ -69,6 +85,15 @@ const vacationSlice = createSlice({
         state.vacation = action.payload
       })
       .addCase(getVacations.rejected, (state, action) => {
+        state.status = "failed"
+      })
+      .addCase(addSubscriberToDB.pending, (state) => {
+        state.status = "loading"
+      })
+      .addCase(addSubscriberToDB.fulfilled, (state) => {
+        state.status = "idle"
+      })
+      .addCase(addSubscriberToDB.rejected, (state) => {
         state.status = "failed"
       })
   },
