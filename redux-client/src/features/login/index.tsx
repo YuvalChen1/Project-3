@@ -1,9 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { loginUser } from "./loginSlice"
-import { useAppDispatch } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { InputText } from "primereact/inputtext"
 import { Button } from "primereact/button"
 import { Card } from "primereact/card"
+import { Toast } from "primereact/toast"
 import { Link, useNavigate } from "react-router-dom"
 import "./login.css"
 
@@ -12,6 +13,8 @@ function Login() {
   const [password, setPassword] = useState("")
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const loading = useAppSelector((state) => state.login.loading)
+  const toast = useRef<Toast | null>(null)
 
   const handleLogin = async () => {
     try {
@@ -20,6 +23,11 @@ function Login() {
         localStorage.setItem("token", response.payload.token)
         navigate("/vacations")
       } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Login Up Failed",
+          detail: "Login up failed. Please try again.",
+        })
         console.error("Login failed:", response.payload)
       }
     } catch (error) {
@@ -54,12 +62,14 @@ function Login() {
             label="Login"
             icon="pi pi-sign-in"
             onClick={handleLogin}
+            disabled={loading}
           />
         </div>
         <p style={{ marginTop: "50px", textAlign: "center" }}>
           Don't have an account? <Link to="/signUp">Sign up</Link>
         </p>
       </Card>
+      <Toast ref={toast} />
     </div>
   )
 }
