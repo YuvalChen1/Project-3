@@ -4,13 +4,13 @@ import "primereact/resources/themes/saga-blue/theme.css"
 import "primereact/resources/primereact.min.css"
 import "primeicons/primeicons.css"
 
-import { Link, Route, Routes, useNavigate } from "react-router-dom"
+import { Link, Route, Routes, Navigate, useNavigate } from "react-router-dom"
 import { Button } from "primereact/button"
 
 import Login from "./features/login"
 import SignUp from "./features/sign-up"
 import Vacations from "./features/vacations"
-import { ProtectedRoute } from "./features/ui-components/protected-route"
+import ProtectedRoute from "./features/ui-components/protected-route"
 
 function App() {
   const navigate = useNavigate()
@@ -42,13 +42,16 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route
-            path="/app/*"
+            path="/vacations"
             element={
               <ProtectedRoute>
-                <Route index element={<Vacations />} />{" "}
+                <Vacations />
               </ProtectedRoute>
             }
           />
+          {!isLoggedIn && (
+            <Route path="/" element={<Navigate to="/login" replace />} />
+          )}
         </Routes>
       </div>
     </div>

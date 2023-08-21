@@ -18,7 +18,7 @@ function Login() {
       const response = await dispatch(loginUser({ email, password }))
       if (loginUser.fulfilled.match(response)) {
         localStorage.setItem("token", response.payload.token)
-        navigate("/app/vacations")
+        navigate("/vacations")
       } else {
         console.error("Login failed:", response.payload)
       }
