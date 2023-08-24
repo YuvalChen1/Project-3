@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { InputText } from "primereact/inputtext"
 import { Button } from "primereact/button"
@@ -20,6 +20,11 @@ function SignUp() {
 
   const loading = useAppSelector((state) => state.signUp.loading)
   const toast = useRef<Toast | null>(null)
+
+  useEffect(() => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("userId")
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

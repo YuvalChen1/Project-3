@@ -1,12 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addSubscriber, getVacationsApi } from "./vacationsAPI"
-import { useAppSelector } from "../../app/hooks"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import {
+  addSubscriberApi,
+  getVacationsByUserIdApi,
+  unSubscribeApi,
+} from "./vacationsAPI"
 
 export const getVacations = createAsyncThunk(
   "vacations/vacationsAsync",
-  async () => {
+  async (userId: number) => {
     try {
-      const response = await getVacationsApi()
+      const response = await getVacationsByUserIdApi(userId)
       if (!response) throw new Error("")
       return response.data
     } catch (error) {
@@ -14,7 +17,6 @@ export const getVacations = createAsyncThunk(
     }
   },
 )
-
 export interface IFollower {
   userId: number
   vacationId: number
@@ -24,7 +26,20 @@ export const addSubscriberToDB = createAsyncThunk(
   "followers/followersAsync",
   async ({ userId, vacationId }: IFollower) => {
     try {
-      const response = await addSubscriber(userId, vacationId)
+      const response = await addSubscriberApi(userId, vacationId)
+      if (!response) throw new Error("")
+      return response.data
+    } catch (error) {
+      throw new Error("Something Went Wrong")
+    }
+  },
+)
+
+export const removeSubscriberFromDB = createAsyncThunk(
+  "unFollowers/unFollowersAsync",
+  async ({ userId, vacationId }: IFollower) => {
+    try {
+      const response = await unSubscribeApi(userId, vacationId)
       if (!response) throw new Error("")
       return response.data
     } catch (error) {
@@ -38,10 +53,12 @@ interface IVacation {
     id: number
     destination: string
     description: string
-    startDate: Date
-    endDate: Date
+    startDate: string
+    endDate: string
     price: number
     image: string
+    subscribers: number
+    isSubscribed: boolean
   }>
   status: "idle" | "loading" | "failed"
 }
@@ -52,10 +69,12 @@ const initialState: IVacation = {
       id: 0,
       destination: "",
       description: "",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date().toISOString(),
+      endDate: new Date().toISOString(),
       price: 0,
       image: "",
+      subscribers: 0,
+      isSubscribed: false,
     },
   ],
   status: "idle",
@@ -64,17 +83,7 @@ const initialState: IVacation = {
 const vacationSlice = createSlice({
   name: "vacations",
   initialState,
-  reducers: {
-    vacationSubscribe: (state, action: PayloadAction<number>) => {
-      // const vacationId = action.payload
-      // const vacation = state.vacation.find((v) => v.id === vacationId)
-
-      // if (vacation) {
-      //   vacation.isSubscribed = true
-      //   vacation.numberOfSubscribers += 1
-      // }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getVacations.pending, (state) => {
@@ -82,11 +91,15 @@ const vacationSlice = createSlice({
       })
       .addCase(getVacations.fulfilled, (state, action) => {
         state.status = "idle"
-        state.vacation = action.payload
+        state.vacation = action.payload.map((vacation: any) => ({
+          ...vacation,
+          startDate: new Date(vacation.startDate).toISOString(),
+          endDate: new Date(vacation.endDate).toISOString(),
+        }))
       })
       .addCase(getVacations.rejected, (state, action) => {
         state.status = "failed"
-      })
+      }) //////////////////////////////////////////////////////////////////////
       .addCase(addSubscriberToDB.pending, (state) => {
         state.status = "loading"
       })
@@ -95,10 +108,17 @@ const vacationSlice = createSlice({
       })
       .addCase(addSubscriberToDB.rejected, (state) => {
         state.status = "failed"
+      }) //////////////////////////////////////////////////////////////////////
+      .addCase(removeSubscriberFromDB.pending, (state) => {
+        state.status = "loading"
+      })
+      .addCase(removeSubscriberFromDB.fulfilled, (state) => {
+        state.status = "idle"
+      })
+      .addCase(removeSubscriberFromDB.rejected, (state) => {
+        state.status = "failed"
       })
   },
 })
-
-export const { vacationSubscribe } = vacationSlice.actions
 
 export default vacationSlice.reducer

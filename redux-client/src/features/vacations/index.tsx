@@ -1,10 +1,13 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { IFollower, addSubscriberToDB, getVacations } from "./vacationsSlice"
+import {
+  addSubscriberToDB,
+  getVacations,
+  removeSubscriberFromDB,
+} from "./vacationsSlice"
 import { Card } from "primereact/card"
 import { Button } from "primereact/button"
-import "./Vacations.css" // Import a CSS file for styling
-import { vacationSubscribe } from "./vacationsSlice"
+import "./Vacations.css"
 
 export default function Vacations() {
   const dispatch = useAppDispatch()
@@ -13,11 +16,28 @@ export default function Vacations() {
   const userIdString = localStorage.getItem("userId")
   const userId = Number(userIdString)
 
+  const handleSubscribe = (vacationId: number) => {
+    dispatch(
+      addSubscriberToDB({ userId: userId, vacationId: vacationId }),
+    ).then(() => {
+      dispatch(getVacations(userId))
+    })
+  }
+
+  const handleUnsubscribe = async (vacationId: number) => {
+    try {
+      await dispatch(
+        removeSubscriberFromDB({ userId: userId, vacationId: vacationId }),
+      )
+      dispatch(getVacations(userId))
+    } catch (error) {
+      console.error("Error unsubscribing from vacation:", error)
+    }
+  }
+
   useEffect(() => {
-    dispatch(getVacations())
-    console.log(userId)
-    console.log(typeof userId)
-  }, [dispatch])
+    dispatch(getVacations(userId))
+  }, [])
 
   return (
     <div>
@@ -51,14 +71,21 @@ export default function Vacations() {
                   <strong>End Date:</strong>{" "}
                   {new Date(v.endDate).toLocaleString()}
                 </p>
+                <p>
+                  <strong>Subscribers:</strong>
+                  {v.subscribers}
+                </p>
                 <Button
-                  label="Subscribe"
-                  icon="pi pi-heart"
-                  onClick={() =>
-                    dispatch(
-                      addSubscriberToDB({ userId: userId, vacationId: v.id }),
-                    )
-                  }
+                  type="button"
+                  label={v.isSubscribed ? "Unsubscribe" : "Subscribe"}
+                  icon={v.isSubscribed ? "pi pi-times" : "pi pi-heart"}
+                  onClick={() => {
+                    if (v.isSubscribed) {
+                      handleUnsubscribe(v.id)
+                    } else {
+                      handleSubscribe(v.id)
+                    }
+                  }}
                 />
               </Card>
             </div>

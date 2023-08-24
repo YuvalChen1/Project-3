@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { loginUser } from "./loginSlice"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { InputText } from "primereact/inputtext"
@@ -15,6 +15,11 @@ function Login() {
   const navigate = useNavigate()
   const loading = useAppSelector((state) => state.login.loading)
   const toast = useRef<Toast | null>(null)
+
+  useEffect(() => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("userId")
+  }, [])
 
   const handleLogin = async () => {
     try {

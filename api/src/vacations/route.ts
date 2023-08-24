@@ -1,10 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import { logger } from "../logger";
 import zod from "zod";
-import { getAllVacationsApi } from "./handlers/getAllVacations";
 import { addVacationApi } from "./handlers/addVacation";
 import { editVacationByIdApi } from "./handlers/editVacation";
 import { deleteVacationByIdApi } from "./handlers/deleteVacations";
+import { getAllVacationsByUserIdApi } from "./handlers/getAllVacationsByUserId";
 const vacationsRouter = express.Router();
 
 const vacationBody = zod.object({
@@ -21,7 +21,9 @@ vacationsRouter.get(
   "/",
   async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getAllVacationsApi();
+      const userId = +req.query.userId;
+      if (typeof userId !== "number") throw new Error("Invalid User Id");
+      const result = await getAllVacationsByUserIdApi(userId);
       res.json(result);
     } catch (error) {
       logger.error(error.message);
