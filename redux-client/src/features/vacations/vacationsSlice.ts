@@ -60,7 +60,7 @@ interface IVacation {
     subscribers: number
     isSubscribed: boolean
   }>
-  status: "idle" | "loading" | "failed"
+  status: "idle" | "loading" | "failed" | "fulfilled"
 }
 
 const initialState: IVacation = {
@@ -90,7 +90,7 @@ const vacationSlice = createSlice({
         state.status = "loading"
       })
       .addCase(getVacations.fulfilled, (state, action) => {
-        state.status = "idle"
+        state.status = "fulfilled"
         state.vacation = action.payload.map((vacation: any) => ({
           ...vacation,
           startDate: new Date(vacation.startDate).toISOString(),
@@ -104,7 +104,7 @@ const vacationSlice = createSlice({
         state.status = "loading"
       })
       .addCase(addSubscriberToDB.fulfilled, (state) => {
-        state.status = "idle"
+        state.status = "fulfilled"
       })
       .addCase(addSubscriberToDB.rejected, (state) => {
         state.status = "failed"
@@ -113,7 +113,7 @@ const vacationSlice = createSlice({
         state.status = "loading"
       })
       .addCase(removeSubscriberFromDB.fulfilled, (state) => {
-        state.status = "idle"
+        state.status = "fulfilled"
       })
       .addCase(removeSubscriberFromDB.rejected, (state) => {
         state.status = "failed"

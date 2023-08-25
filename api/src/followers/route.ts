@@ -10,7 +10,7 @@ followersRouter.post(
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { userId, vacationId } = req.body;
-      if (typeof userId !== "number" && typeof vacationId !== "number")
+      if (!userId || !vacationId)
         throw new Error("Invalid User Id or vacation Id");
       await addVacationSubscribeApi(userId, vacationId);
       res.json({ message: "ok" });
@@ -26,7 +26,7 @@ followersRouter.delete(
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { userId, vacationId } = req.body;
-      if (typeof userId !== "number" && typeof vacationId !== "number")
+      if (!userId || !vacationId)
         throw new Error("Invalid User Id or vacation Id");
       await deleteVacationSubscribeApi(userId, vacationId);
       res.json({ message: "ok" });

@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import {
-  addSubscriberToDB,
-  getVacations,
-  removeSubscriberFromDB,
-} from "./vacationsSlice"
+
 import { Card } from "primereact/card"
 import { Button } from "primereact/button"
-import "./Vacations.css"
-import Footer from "../ui-components/footer"
+import "./adminVacations.css"
+import { useNavigate } from "react-router-dom"
+import { getVacations } from "../vacations/vacationsSlice"
+import { deleteVacation } from "./adminVacationsSlice"
 
-export default function Vacations() {
+export default function AdminVacations() {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const vacations = useAppSelector((state) => state.vacations.vacation)
   const status = useAppSelector((state) => state.vacations.status)
   const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
 
-  const handleSubscribe = (vacationId: number) => {
-    dispatch(
-      addSubscriberToDB({ userId: userId, vacationId: vacationId }),
-    ).then(() => {
-      dispatch(getVacations(userId))
-    })
-  }
+  // const handleSubscribe = (vacationId: number) => {
+  //   dispatch(
+  //     addSubscriberToDB({ userId: userId, vacationId: vacationId }),
+  //   ).then(() => {
+  //     dispatch(getVacations(userId))
+  //   })
+  // }
 
-  const handleUnsubscribe = async (vacationId: number) => {
+  const handleDelete = async (vacationId: number) => {
     try {
-      await dispatch(
-        removeSubscriberFromDB({ userId: userId, vacationId: vacationId }),
-      )
+      await dispatch(deleteVacation(vacationId))
       dispatch(getVacations(userId))
     } catch (error) {
       console.error("Error unsubscribing from vacation:", error)
@@ -41,7 +38,20 @@ export default function Vacations() {
 
   return (
     <div style={{ marginTop: "80px" }}>
-      <h1 style={{ textAlign: "center" }}>Vacations</h1>
+      <h1 style={{ textAlign: "center" }}>Admin Vacations</h1>
+      {status !== "loading" && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{ width: "270px", height: "50px" }}
+            type="button"
+            label="Add New Vacation"
+            icon="pi pi-plus"
+            onClick={() => {
+              navigate("/addNewVacation")
+            }}
+          />
+        </div>
+      )}
       {status === "loading" ? (
         <div>Loading...</div>
       ) : status === "failed" ? (
@@ -77,14 +87,16 @@ export default function Vacations() {
                 </p>
                 <Button
                   type="button"
-                  label={v.isSubscribed ? "Unsubscribe" : "Subscribe"}
-                  icon={v.isSubscribed ? "pi pi-heart-fill" : "pi pi-heart"}
+                  label={"Edit"}
+                  icon={"pi pi-file-edit"}
+                  onClick={() => {}}
+                />
+                <Button
+                  type="button"
+                  label={"Delete"}
+                  icon={"pi pi-trash"}
                   onClick={() => {
-                    if (v.isSubscribed) {
-                      handleUnsubscribe(v.id)
-                    } else {
-                      handleSubscribe(v.id)
-                    }
+                    handleDelete(v.id)
                   }}
                 />
               </Card>
@@ -92,7 +104,6 @@ export default function Vacations() {
           ))}
         </div>
       )}
-      {/* <Footer></Footer> */}
     </div>
   )
 }

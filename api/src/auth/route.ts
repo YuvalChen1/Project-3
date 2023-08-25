@@ -41,7 +41,11 @@ authRouter.post("/login", middlewareLogin, async function (req, res, next) {
       process.env.SECRET,
       { expiresIn: "60m" }
     );
-    res.json({ token: signedToken, userId: userRecord.id });
+    res.json({
+      token: signedToken,
+      userRecord: userRecord,
+      userId: userRecord.id,
+    });
   } catch (error) {
     logger.error(error.message);
     return res.status(401).send("User is unauthorized");

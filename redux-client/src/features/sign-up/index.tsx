@@ -11,47 +11,78 @@ import "./SignUp.css"
 function SignUp() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-  })
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+
+  const [emailValid, setEmailValid] = useState(true)
+  const [passwordValid, setPasswordValid] = useState(true)
+  const [firstNameValid, setFirstNameValid] = useState(true)
+  const [lastNameValid, setLastNameValid] = useState(true)
 
   const loading = useAppSelector((state) => state.signUp.loading)
   const toast = useRef<Toast | null>(null)
 
   useEffect(() => {
     localStorage.removeItem("token")
-    localStorage.removeItem("userId")
+    localStorage.removeItem("userRecord")
   }, [])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setEmail(value)
+    setEmailValid(validateEmail(value))
+  }
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setPassword(value)
+    setPasswordValid(value.length >= 4)
+  }
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setFirstName(value)
+    setFirstNameValid(value.length >= 2)
+  }
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setLastName(value)
+    setLastNameValid(value.length >= 2)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const responseAction = await dispatch(signUpUser(formData))
+    if (emailValid && passwordValid && firstNameValid && lastNameValid) {
+      const formData = { email, password, firstName, lastName }
+      const responseAction = await dispatch(signUpUser(formData))
 
-    if (signUpUser.fulfilled.match(responseAction)) {
-      toast.current?.show({
-        severity: "success",
-        summary: "Sign Up Successful",
-        detail: "You have successfully signed up!",
-      })
-      setTimeout(() => {
-        navigate("/login")
-      }, 1500)
-    } else {
-      toast.current?.show({
-        severity: "error",
-        summary: "Sign Up Failed",
-        detail: "Sign up failed. Please try again.",
-      })
+      if (signUpUser.fulfilled.match(responseAction)) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Sign Up Successful",
+          detail: "You have successfully signed up!",
+        })
+        setTimeout(() => {
+          navigate("/login")
+        }, 1500)
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Sign Up Failed",
+          detail: "Sign up failed. Please try again.",
+        })
+      }
     }
+  }
+
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return regex.test(email)
   }
 
   return (
@@ -64,44 +95,62 @@ function SignUp() {
               <InputText
                 id="email"
                 type="text"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
+                value={email}
+                onChange={handleEmailChange}
                 required
+                className={!emailValid ? "p-invalid" : ""}
               />
+              {!emailValid && (
+                <small className="p-error">Invalid email address.</small>
+              )}
             </div>
             <div className="p-field">
               <label htmlFor="password">Password :</label>
               <InputText
                 id="password"
                 type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
+                value={password}
+                onChange={handlePasswordChange}
                 required
+                className={!passwordValid ? "p-invalid" : ""}
               />
+              {!passwordValid && (
+                <small className="p-error">
+                  Password must be at least 4 characters long.
+                </small>
+              )}
             </div>
             <div className="p-field">
               <label htmlFor="firstName">First Name :</label>
               <InputText
                 id="firstName"
                 type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
+                value={firstName}
+                onChange={handleFirstNameChange}
                 required
+                className={!firstNameValid ? "p-invalid" : ""}
               />
+              {!firstNameValid && (
+                <small className="p-error">
+                  First name must be at least 2 characters long.
+                </small>
+              )}
             </div>
             <div className="p-field">
               <label htmlFor="lastName">Last Name :</label>
               <InputText
                 id="lastName"
                 type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
+                value={lastName}
+                onChange={handleLastNameChange}
                 required
+                className={!lastNameValid ? "p-invalid" : ""}
               />
+              {!lastNameValid && (
+                <small className="p-error">
+                  Last name must be at least 2 characters long.
+                </small>
+              )}
             </div>
             <Button
               style={{ marginTop: "20px" }}
