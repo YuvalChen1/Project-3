@@ -4,17 +4,35 @@ import { InputText } from "primereact/inputtext"
 import { Button } from "primereact/button"
 import { Card } from "primereact/card"
 import { Toast } from "primereact/toast"
-import { Link, useNavigate } from "react-router-dom"
-import "./newVacation.css"
-import { addNewVacation } from "../adminVacations/adminVacationsSlice"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import "./edit.css"
+import { editVacation } from "../adminVacations/adminVacationsSlice"
+import { getVacations } from "../vacations/vacationsSlice"
 
-function NewVacation() {
-  const [destination, setDestination] = useState("")
-  const [description, setDescription] = useState("")
-  const [startDate, setStartDate] = useState<Date | null>(null)
-  const [endDate, setEndDate] = useState<Date | null>(null)
-  const [price, setPrice] = useState<number | null>(null)
-  const [image, setImage] = useState("")
+function EditVacation() {
+  const vacations = useAppSelector((state) => state.vacations.vacation)
+  const { id } = useParams()
+  const vacationId = Number(id)
+  const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
+
+  useEffect(() => {
+    dispatch(getVacations(userId))
+  }, [])
+
+  const initVacation = vacations.find((v) => {
+    return v.id === vacationId
+  })
+
+  const [destination, setDestination] = useState(initVacation?.destination)
+  const [description, setDescription] = useState(initVacation?.description)
+  const [startDate, setStartDate] = useState<Date | null>(
+    initVacation?.startDate ? new Date(initVacation.startDate) : null,
+  )
+  const [endDate, setEndDate] = useState<Date | null>(
+    initVacation?.endDate ? new Date(initVacation.endDate) : null,
+  )
+  const [price, setPrice] = useState<number | null>(initVacation?.price || null)
+  const [image, setImage] = useState(initVacation?.image)
 
   const [destinationValid, setDestinationValid] = useState(true)
   const [descriptionValid, setDescriptionValid] = useState(true)
@@ -29,7 +47,7 @@ function NewVacation() {
   const loading = useAppSelector((state) => state.login.loading)
   const toast = useRef<Toast | null>(null)
 
-  const handleAddVacation = async () => {
+  const handleEditVacation = async () => {
     if (
       !destination ||
       !description ||
@@ -59,14 +77,15 @@ function NewVacation() {
       endDate,
       price,
       image,
+      id: vacationId,
     }
     try {
-      const response = await dispatch(addNewVacation(vacationPayload))
-      if (addNewVacation.fulfilled.match(response)) {
+      const response = await dispatch(editVacation(vacationPayload))
+      if (editVacation.fulfilled.match(response)) {
         toast.current?.show({
           severity: "success",
-          summary: "New Vacation Added",
-          detail: "New Vacation Added",
+          summary: "Vacation Edited Successfully",
+          detail: "Vacation Edited Successfully",
         })
         setTimeout(() => {
           navigate("/admin-vacations")
@@ -74,13 +93,13 @@ function NewVacation() {
       } else {
         toast.current?.show({
           severity: "error",
-          summary: "Adding New Vacation Failed",
-          detail: "Adding New Vacation Failed. Please try again.",
+          summary: "Edit Vacation Failed",
+          detail: "Edit Vacation Failed. Please try again.",
         })
-        console.error("Adding New Vacation Failed:", response)
+        console.error("Edit Vacation Failed:", response)
       }
     } catch (error) {
-      console.error("Adding New Vacation Failed:", error)
+      console.error("Edit Vacation Failed:", error)
     }
   }
 
@@ -91,7 +110,7 @@ function NewVacation() {
     >
       <Card
         className="vacation-form"
-        title="New Vacation"
+        title="Edit Vacation"
         style={{ width: "350px" }}
       >
         <div className="p-fluid">
@@ -203,9 +222,9 @@ function NewVacation() {
           </div>
           <Button
             style={{ marginTop: "20px" }}
-            label="Add New Vacation"
-            icon="pi pi-plus"
-            onClick={handleAddVacation}
+            label="Edit Vacation"
+            icon="pi pi-file-edit"
+            onClick={handleEditVacation}
             disabled={loading}
           />
           <Button
@@ -222,4 +241,4 @@ function NewVacation() {
   )
 }
 
-export default NewVacation
+export default EditVacation

@@ -10,6 +10,10 @@ export interface IVacationAPI {
   image: string
 }
 
+export interface IVacationIdAPI extends IVacationAPI {
+  id: number
+}
+
 export async function addNewVacationApi(vacation: IVacationAPI) {
   try {
     const response = await axios.post(
@@ -55,5 +59,37 @@ export async function deleteVacationApi(vacationId: number) {
   } catch (error) {
     console.error("API request failed with error:", error)
     throw new Error("Delete Vacation Failed")
+  }
+}
+
+export async function editVacationByIdApi(vacation: IVacationIdAPI) {
+  try {
+    const response = await axios.put(
+      `${url}/vacations/edit`,
+      {
+        destination: vacation.destination,
+        description: vacation.description,
+        startDate: vacation.startDate,
+        endDate: vacation.endDate,
+        price: vacation.price,
+        image: vacation.image,
+        id: vacation.id,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      },
+    )
+
+    if (response.status === 200) {
+      return { message: "New Vacation Added" }
+    } else {
+      console.error("API request failed with status:", response.status)
+      throw new Error("Adding New Vacation Failed")
+    }
+  } catch (error) {
+    console.error("API request failed with error:", error)
+    throw new Error("Adding New Vacation Failed")
   }
 }

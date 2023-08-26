@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { addNewVacationApi, deleteVacationApi } from "./adminVacationsAPI"
-import { IVacationAPI } from "./adminVacationsAPI"
+import {
+  addNewVacationApi,
+  deleteVacationApi,
+  editVacationByIdApi,
+} from "./adminVacationsAPI"
+import { IVacationAPI, IVacationIdAPI } from "./adminVacationsAPI"
 
 export interface IFollower {
   userId: number
@@ -25,6 +29,19 @@ export const deleteVacation = createAsyncThunk(
   async (vacationId: number) => {
     try {
       const response = await deleteVacationApi(vacationId)
+      if (!response) throw new Error("")
+      return response
+    } catch (error) {
+      throw new Error("Something Went Wrong")
+    }
+  },
+)
+
+export const editVacation = createAsyncThunk(
+  "editVacation/editVacationAsync",
+  async (vacation: IVacationIdAPI) => {
+    try {
+      const response = await editVacationByIdApi(vacation)
       if (!response) throw new Error("")
       return response
     } catch (error) {
@@ -87,6 +104,15 @@ const vacationSlice = createSlice({
         state.status = "idle"
       })
       .addCase(deleteVacation.rejected, (state) => {
+        state.status = "failed"
+      }) //////////////////////////////////////////////////////////////////////
+      .addCase(editVacation.pending, (state) => {
+        state.status = "loading"
+      })
+      .addCase(editVacation.fulfilled, (state) => {
+        state.status = "idle"
+      })
+      .addCase(editVacation.rejected, (state) => {
         state.status = "failed"
       })
   },

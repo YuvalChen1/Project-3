@@ -1,6 +1,7 @@
 import { pool } from "../../database";
 
 interface IVacation {
+  id: number;
   destination: string;
   description: string;
   startDate: Date;
@@ -9,7 +10,14 @@ interface IVacation {
   image: string;
 }
 
-async function editVacationByIdApi(id: number, vacation: IVacation) {
+function convertToMySQLDateTime(isoDate) {
+  const date = new Date(isoDate);
+  return date.toISOString().slice(0, 19).replace("T", " ");
+}
+
+async function editVacationByIdApi(vacation: IVacation) {
+  const convertedStartDate = convertToMySQLDateTime(vacation.startDate);
+  const convertedEndDate = convertToMySQLDateTime(vacation.endDate);
   const query = `
     UPDATE vacations_table 
     SET 
@@ -24,11 +32,11 @@ async function editVacationByIdApi(id: number, vacation: IVacation) {
   const results = await pool.execute(query, [
     vacation.destination,
     vacation.description,
-    vacation.startDate,
-    vacation.endDate,
+    convertedStartDate,
+    convertedEndDate,
     vacation.price,
     vacation.image,
-    id,
+    vacation.id,
   ]);
   const [data] = results;
   return data;

@@ -6,7 +6,7 @@ import { Button } from "primereact/button"
 import "./adminVacations.css"
 import { useNavigate } from "react-router-dom"
 import { getVacations } from "../vacations/vacationsSlice"
-import { deleteVacation } from "./adminVacationsSlice"
+import { deleteVacation, editVacation } from "./adminVacationsSlice"
 
 export default function AdminVacations() {
   const dispatch = useAppDispatch()
@@ -14,14 +14,6 @@ export default function AdminVacations() {
   const vacations = useAppSelector((state) => state.vacations.vacation)
   const status = useAppSelector((state) => state.vacations.status)
   const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
-
-  // const handleSubscribe = (vacationId: number) => {
-  //   dispatch(
-  //     addSubscriberToDB({ userId: userId, vacationId: vacationId }),
-  //   ).then(() => {
-  //     dispatch(getVacations(userId))
-  //   })
-  // }
 
   const handleDelete = async (vacationId: number) => {
     try {
@@ -89,7 +81,9 @@ export default function AdminVacations() {
                   type="button"
                   label={"Edit"}
                   icon={"pi pi-file-edit"}
-                  onClick={() => {}}
+                  onClick={() => {
+                    navigate(`/edit-vacation/${v.id}`)
+                  }}
                 />
                 <Button
                   type="button"

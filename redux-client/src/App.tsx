@@ -12,6 +12,7 @@ import Vacations from "./features/vacations"
 import ProtectedRoute from "./features/ui-components/protected-route"
 import AdminVacations from "./features/adminVacations"
 import NewVacation from "./features/addNewVacation"
+import EditVacation from "./features/editVactions"
 
 interface IRoute {
   path: string
@@ -64,6 +65,17 @@ const routes: Array<IRoute> = [
     ),
     key: "addNewVacation",
     label: "addNewVacation",
+    roles: ["admin"],
+  },
+  {
+    path: "/edit-vacation/:id",
+    component: (
+      <ProtectedRoute>
+        <EditVacation />
+      </ProtectedRoute>
+    ),
+    key: "editVacation",
+    label: "editVacation",
     roles: ["admin"],
   },
 ]

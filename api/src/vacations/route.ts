@@ -50,10 +50,12 @@ vacationsRouter.put(
   "/edit",
   async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.query;
-      if (!id) throw new Error("Invalid Vacation Id");
+      // const id = req.query;
+      // if (!id) throw new Error("Invalid Vacation Id");
+      console.log(req.body);
+
       vacationBody.parse(req.body);
-      await editVacationByIdApi(id, req.body);
+      await editVacationByIdApi(req.body);
       res.json({ message: "ok" });
     } catch (error) {
       logger.error(error.message);
