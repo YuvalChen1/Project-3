@@ -11,7 +11,7 @@ export const getVacations = createAsyncThunk(
     try {
       const response = await getVacationsByUserIdApi(userId)
       if (!response) throw new Error("")
-      return response.data
+      return response
     } catch (error) {
       throw new Error("Something Went Wrong")
     }

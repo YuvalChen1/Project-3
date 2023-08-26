@@ -4,7 +4,7 @@ import {
   deleteVacationApi,
   editVacationByIdApi,
 } from "./adminVacationsAPI"
-import { IVacationAPI, IVacationIdAPI } from "./adminVacationsAPI"
+import { IAddVacation, IEditVacation } from "./adminVacationsAPI"
 
 export interface IFollower {
   userId: number
@@ -13,7 +13,7 @@ export interface IFollower {
 
 export const addNewVacation = createAsyncThunk(
   "addNewVacation/addNewVacationAsync",
-  async (vacation: IVacationAPI) => {
+  async (vacation: IAddVacation) => {
     try {
       const response = await addNewVacationApi(vacation)
       if (!response) throw new Error("")
@@ -39,7 +39,7 @@ export const deleteVacation = createAsyncThunk(
 
 export const editVacation = createAsyncThunk(
   "editVacation/editVacationAsync",
-  async (vacation: IVacationIdAPI) => {
+  async (vacation: IEditVacation) => {
     try {
       const response = await editVacationByIdApi(vacation)
       if (!response) throw new Error("")
