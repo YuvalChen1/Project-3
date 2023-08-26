@@ -1,14 +1,40 @@
 import axios from "axios"
 import { url } from "../sign-up/signUpAPI"
+import { v } from "vitest/dist/types-e3c9754d.js"
+
+export interface IVacation {
+  id: number
+  destination: string
+  description: string
+  startDate: Date
+  endDate: Date
+  price: number
+  image: string
+  subscribers: number
+  isSubscribed: boolean
+}
 
 export async function getVacationsByUserIdApi(userId: number) {
   try {
-    const result = await axios.get(`${url}/vacations?userId=${userId}`, {
+    const { data } = await axios.get(`${url}/vacations?userId=${userId}`, {
       headers: {
         authorization: localStorage.getItem("token"),
       },
     })
-    return result
+    const vacations: Array<IVacation> = data.map((v: any) => {
+      return {
+        id: v.id,
+        destination: v.destination,
+        description: v.description,
+        startDate: v.startDate,
+        endDate: v.endDate,
+        price: v.price,
+        image: v.image,
+        subscribers: v.subscribers,
+        isSubscribed: v.isSubscribed,
+      }
+    })
+    return vacations
   } catch (error) {
     throw new Error("Vacations Fetch Failed")
   }

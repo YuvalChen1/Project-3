@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-
-import { Card } from "primereact/card"
 import { Button } from "primereact/button"
 import "./adminVacations.css"
 import { useNavigate } from "react-router-dom"
 import { getVacations } from "../vacations/vacationsSlice"
-import { deleteVacation, editVacation } from "./adminVacationsSlice"
+import { Paginator } from "primereact/paginator"
+import { deleteVacation } from "./adminVacationsSlice"
+import AdminVacationCard from "./adminVacationCard"
+import { Toast } from "primereact/toast"
 
 export default function AdminVacations() {
   const dispatch = useAppDispatch()
@@ -14,14 +15,44 @@ export default function AdminVacations() {
   const vacations = useAppSelector((state) => state.vacations.vacation)
   const status = useAppSelector((state) => state.vacations.status)
   const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
+  const toast = useRef<Toast | null>(null)
+
+  const [first, setFirst] = useState(0)
+  const itemsPerPage = 9
+
+  const handlePageChange = (event: any) => {
+    setFirst(event.first)
+  }
+
+  const paginatedVacations = vacations.slice(first, first + itemsPerPage)
 
   const handleDelete = async (vacationId: number) => {
     try {
-      await dispatch(deleteVacation(vacationId))
-      dispatch(getVacations(userId))
+      const response = await dispatch(deleteVacation(vacationId))
+      if (deleteVacation.fulfilled.match(response)) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Vacation Deleted Successfully",
+          detail: "Vacation Deleted Successfully",
+        })
+        setTimeout(() => {
+          dispatch(getVacations(userId))
+        }, 1500)
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Delete Vacation Failed",
+          detail: "Delete Vacation Failed. Please try again.",
+        })
+        console.error("Edit Vacation Failed:", response)
+      }
     } catch (error) {
-      console.error("Error unsubscribing from vacation:", error)
+      console.error("Delete Vacation Failed:", error)
     }
+  }
+
+  const handleEdit = (vacationId: number) => {
+    navigate(`/edit-vacation/${vacationId}`)
   }
 
   useEffect(() => {
@@ -31,6 +62,12 @@ export default function AdminVacations() {
   return (
     <div style={{ marginTop: "80px" }}>
       <h1 style={{ textAlign: "center" }}>Admin Vacations</h1>
+      <Paginator
+        first={first}
+        rows={itemsPerPage}
+        totalRecords={vacations.length}
+        onPageChange={handlePageChange}
+      />
       {status !== "loading" && (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
@@ -50,52 +87,19 @@ export default function AdminVacations() {
         <div>Failed to load vacations.</div>
       ) : (
         <div style={{ marginTop: "50px" }} className="vacation-grid">
-          {vacations.map((v, index) => (
-            <div className="vacation-card" key={index}>
-              <Card title={v.destination}>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <img
-                    width={"400px"}
-                    height={"250px"}
-                    src={v.image}
-                    alt={v.destination}
-                  />
-                </div>
-                <p>{v.description}</p>
-                <p>
-                  <strong>Price:</strong> ${v.price}
-                </p>
-                <p>
-                  <strong>Start Date:</strong>{" "}
-                  {new Date(v.startDate).toLocaleString()}
-                </p>
-                <p>
-                  <strong>End Date:</strong>{" "}
-                  {new Date(v.endDate).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Subscribers:</strong>
-                  {v.subscribers}
-                </p>
-                <Button
-                  type="button"
-                  label={"Edit"}
-                  icon={"pi pi-file-edit"}
-                  onClick={() => {
-                    navigate(`/edit-vacation/${v.id}`)
-                  }}
-                />
-                <Button
-                  type="button"
-                  label={"Delete"}
-                  icon={"pi pi-trash"}
-                  onClick={() => {
-                    handleDelete(v.id)
-                  }}
-                />
-              </Card>
-            </div>
+          {paginatedVacations.map((v, index) => (
+            <AdminVacationCard
+              key={index}
+              vacation={{
+                ...v,
+                startDate: new Date(v.startDate),
+                endDate: new Date(v.endDate),
+              }}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
           ))}
+          <Toast ref={toast} />
         </div>
       )}
     </div>

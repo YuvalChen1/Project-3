@@ -5,11 +5,10 @@ import {
   getVacations,
   removeSubscriberFromDB,
 } from "./vacationsSlice"
-import { Card } from "primereact/card"
-import { Button } from "primereact/button"
 import { Paginator } from "primereact/paginator"
 import "./Vacations.css"
 import Footer from "../ui-components/footer"
+import VacationCard from "./vacationCard"
 
 export default function Vacations() {
   const dispatch = useAppDispatch()
@@ -64,46 +63,16 @@ export default function Vacations() {
       ) : (
         <div style={{ marginTop: "50px" }} className="vacation-grid">
           {paginatedVacations.map((v, index) => (
-            <div className="vacation-card" key={index}>
-              <Card title={v.destination}>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <img
-                    width={"400px"}
-                    height={"250px"}
-                    src={v.image}
-                    alt={v.destination}
-                  />
-                </div>
-                <p>{v.description}</p>
-                <p>
-                  <strong>Price:</strong> ${v.price}
-                </p>
-                <p>
-                  <strong>Start Date:</strong>{" "}
-                  {new Date(v.startDate).toLocaleString()}
-                </p>
-                <p>
-                  <strong>End Date:</strong>{" "}
-                  {new Date(v.endDate).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Subscribers:</strong>
-                  {v.subscribers}
-                </p>
-                <Button
-                  type="button"
-                  label={v.isSubscribed ? "Unsubscribe" : "Subscribe"}
-                  icon={v.isSubscribed ? "pi pi-heart-fill" : "pi pi-heart"}
-                  onClick={() => {
-                    if (v.isSubscribed) {
-                      handleUnsubscribe(v.id)
-                    } else {
-                      handleSubscribe(v.id)
-                    }
-                  }}
-                />
-              </Card>
-            </div>
+            <VacationCard
+              key={index}
+              vacation={{
+                ...v,
+                startDate: new Date(v.startDate),
+                endDate: new Date(v.endDate),
+              }}
+              onSubscribe={handleSubscribe}
+              onUnsubscribe={handleUnsubscribe}
+            />
           ))}
         </div>
       )}
