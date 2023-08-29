@@ -44,7 +44,6 @@ authRouter.post("/login", middlewareLogin, async function (req, res, next) {
     res.json({
       token: signedToken,
       userRecord: userRecord,
-      userId: userRecord.id,
     });
   } catch (error) {
     logger.error(error.message);

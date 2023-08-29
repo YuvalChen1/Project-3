@@ -13,10 +13,10 @@ function Login() {
   const [password, setPassword] = useState("")
   const [emailValid, setEmailValid] = useState(true)
   const [passwordValid, setPasswordValid] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const loading = useAppSelector((state) => state.login.loading)
 
   const toast = useRef<Toast | null>(null)
 
@@ -38,6 +38,7 @@ function Login() {
   const handleLogin = async () => {
     if (emailValid && passwordValid) {
       try {
+        setIsLoading(true)
         const response = await dispatch(loginUser({ email, password }))
         if (loginUser.fulfilled.match(response)) {
           localStorage.setItem("token", response.payload.token)
@@ -63,6 +64,8 @@ function Login() {
         }
       } catch (error) {
         console.error("Login failed:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
   }
@@ -109,7 +112,7 @@ function Login() {
             label="Login"
             icon="pi pi-sign-in"
             onClick={handleLogin}
-            disabled={loading}
+            disabled={isLoading}
           />
         </div>
         <p style={{ marginTop: "50px", textAlign: "center" }}>

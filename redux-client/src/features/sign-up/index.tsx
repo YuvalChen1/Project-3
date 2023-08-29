@@ -21,8 +21,8 @@ function SignUp() {
   const [passwordValid, setPasswordValid] = useState(true)
   const [firstNameValid, setFirstNameValid] = useState(true)
   const [lastNameValid, setLastNameValid] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const loading = useAppSelector((state) => state.signUp.loading)
   const toast = useRef<Toast | null>(null)
 
   useEffect(() => {
@@ -56,27 +56,32 @@ function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    try {
+      setIsLoading(true)
+      if (emailValid && passwordValid && firstNameValid && lastNameValid) {
+        const formData = { email, password, firstName, lastName }
+        const responseAction = await dispatch(signUpUser(formData))
 
-    if (emailValid && passwordValid && firstNameValid && lastNameValid) {
-      const formData = { email, password, firstName, lastName }
-      const responseAction = await dispatch(signUpUser(formData))
-
-      if (signUpUser.fulfilled.match(responseAction)) {
-        toast.current?.show({
-          severity: "success",
-          summary: "Sign Up Successful",
-          detail: "You have successfully signed up!",
-        })
-        setTimeout(() => {
-          navigate("/login")
-        }, 1500)
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Sign Up Failed",
-          detail: "Sign up failed. Please try again.",
-        })
+        if (signUpUser.fulfilled.match(responseAction)) {
+          toast.current?.show({
+            severity: "success",
+            summary: "Sign Up Successful",
+            detail: "You have successfully signed up!",
+          })
+          setTimeout(() => {
+            navigate("/login")
+          }, 1500)
+        } else {
+          toast.current?.show({
+            severity: "error",
+            summary: "Sign Up Failed",
+            detail: "Sign up failed. Please try again.",
+          })
+        }
       }
+    } catch (error) {
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -157,7 +162,7 @@ function SignUp() {
               label="Sign Up"
               icon="pi pi-check"
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
             />
             <p style={{ marginTop: "50px", textAlign: "center" }}>
               Already have an account ? <Link to="/login">Login</Link>

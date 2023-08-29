@@ -31,15 +31,10 @@ function AdminVacationCard(props: VacationCardProps) {
           <strong>Price:</strong> ${props.vacation.price}
         </p>
         <p>
-          <strong>Start Date:</strong>{" "}
-          {new Date(props.vacation.startDate).toLocaleString()}
-        </p>
-        <p>
-          <strong>End Date:</strong>{" "}
-          {new Date(props.vacation.endDate).toLocaleString()}
-        </p>
-        <p>
-          <strong>Subscribers:</strong> {props.vacation.subscribers}
+          {" "}
+          <i className="pi pi-calendar"></i> :
+          {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
+          {new Date(props.vacation.endDate).toLocaleDateString()}
         </p>
         <Button
           type="button"

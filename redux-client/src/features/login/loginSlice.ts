@@ -20,14 +20,12 @@ export const loginUser = createAsyncThunk(
 
 interface ILogin {
   user: null | LoginCredentials
-  loading: boolean
   error: undefined | string
   status: "idle" | "loading" | "failed" | "fulfilled"
 }
 
 const initState: ILogin = {
   user: null,
-  loading: false,
   error: undefined,
   status: "idle",
 }
@@ -39,17 +37,14 @@ const loginSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
-        state.loading = true
         state.error = undefined
         state.status = "loading"
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false
         state.user = action.payload
         state.status = "fulfilled"
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false
         state.error = (action.error as Error | undefined)?.message
         state.status = "failed"
       })

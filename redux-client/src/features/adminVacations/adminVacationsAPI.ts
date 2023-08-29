@@ -1,7 +1,7 @@
 import axios from "axios"
 import { url } from "../sign-up/signUpAPI"
 
-export interface IVacationAPI {
+export interface IAddVacation {
   destination: string
   description: string
   startDate: Date
@@ -10,11 +10,11 @@ export interface IVacationAPI {
   image: string
 }
 
-export interface IVacationIdAPI extends IVacationAPI {
+export interface IEditVacation extends IAddVacation {
   id: number
 }
 
-export async function addNewVacationApi(vacation: IVacationAPI) {
+export async function addNewVacationApi(vacation: IAddVacation) {
   try {
     const response = await axios.post(
       `${url}/vacations/new`,
@@ -62,7 +62,7 @@ export async function deleteVacationApi(vacationId: number) {
   }
 }
 
-export async function editVacationByIdApi(vacation: IVacationIdAPI) {
+export async function editVacationByIdApi(vacation: IEditVacation) {
   try {
     const response = await axios.put(
       `${url}/vacations/edit`,

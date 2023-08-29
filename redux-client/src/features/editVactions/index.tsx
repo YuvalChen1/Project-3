@@ -11,6 +11,7 @@ import { getVacations } from "../vacations/vacationsSlice"
 
 function EditVacation() {
   const vacations = useAppSelector((state) => state.vacations.vacation)
+  const [isLoading, setIsLoading] = useState(false)
   const { id } = useParams()
   const vacationId = Number(id)
   const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
@@ -44,7 +45,6 @@ function EditVacation() {
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const loading = useAppSelector((state) => state.login.loading)
   const toast = useRef<Toast | null>(null)
 
   const handleEditVacation = async () => {
@@ -80,6 +80,7 @@ function EditVacation() {
       id: vacationId,
     }
     try {
+      setIsLoading(true)
       const response = await dispatch(editVacation(vacationPayload))
       if (editVacation.fulfilled.match(response)) {
         toast.current?.show({
@@ -100,6 +101,8 @@ function EditVacation() {
       }
     } catch (error) {
       console.error("Edit Vacation Failed:", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -225,14 +228,14 @@ function EditVacation() {
             label="Edit Vacation"
             icon="pi pi-file-edit"
             onClick={handleEditVacation}
-            disabled={loading}
+            disabled={isLoading}
           />
           <Button
             style={{ marginTop: "20px" }}
             label="Go Back"
             icon="pi pi-arrow-left"
             onClick={() => navigate("/admin-vacations")}
-            disabled={loading}
+            disabled={isLoading}
           />
         </div>
       </Card>

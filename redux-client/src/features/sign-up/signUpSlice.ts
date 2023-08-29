@@ -32,14 +32,12 @@ export const signUpUser = createAsyncThunk<
 })
 interface SignUpState {
   user: ISignUpResponse | null
-  loading: boolean
   error: string | null
   success: boolean
 }
 
 const initialState: SignUpState = {
   user: null,
-  loading: false,
   error: null,
   success: false,
 }
@@ -51,16 +49,13 @@ const signUpSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(signUpUser.pending, (state) => {
-        state.loading = true
         state.error = null
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
-        state.loading = false
         state.user = action.payload
         state.success = true
       })
       .addCase(signUpUser.rejected, (state, action) => {
-        state.loading = false
         state.error = action.payload?.message || null
         state.success = false
       })

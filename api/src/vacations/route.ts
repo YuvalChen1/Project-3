@@ -9,7 +9,7 @@ const vacationsRouter = express.Router();
 
 const vacationBody = zod.object({
   destination: zod.string().max(45),
-  description: zod.string().max(100),
+  description: zod.string().max(1000),
   startDate: zod.string(),
   endDate: zod.string(),
   price: zod.number().max(10000),

@@ -1,6 +1,5 @@
 import axios from "axios"
 import { url } from "../sign-up/signUpAPI"
-import { v } from "vitest/dist/types-e3c9754d.js"
 
 export interface IVacation {
   id: number
