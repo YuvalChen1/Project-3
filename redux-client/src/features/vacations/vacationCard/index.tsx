@@ -11,37 +11,41 @@ interface VacationCardProps {
 
 function VacationCard(props: VacationCardProps) {
   return (
-    <div className="vacation-card">
-      <Card title={props.vacation.destination}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            width={"400px"}
-            height={"250px"}
-            src={props.vacation.image}
-            alt={props.vacation.destination}
-          />
-        </div>
-        <p>
-          <strong>Destination:</strong> {props.vacation.destination}
-        </p>
-        <p>
-          <strong>Description:</strong> {props.vacation.description}
-        </p>
-        <p>
-          <strong>Price:</strong> ${props.vacation.price}
-        </p>
-        <p>
-          <strong>Start Date:</strong>{" "}
-          {new Date(props.vacation.startDate).toLocaleString()}
-        </p>
-        <p>
-          <strong>End Date:</strong>{" "}
-          {new Date(props.vacation.endDate).toLocaleString()}
-        </p>
-        <p>
-          <strong>Subscribers:</strong> {props.vacation.subscribers}
-        </p>
+    <Card
+      className="vacation-card"
+      // style={{ backgroundColor: "grey", color: "white" }}
+      title={props.vacation.destination}
+    >
+      <p style={{backgroundColor:"turquoise"}}>
+        {" "}
+        <i className="pi pi-calendar"></i> :
+        {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
+        {new Date(props.vacation.endDate).toLocaleDateString()}
+      </p>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        {/* <h3 className="vacation-title">{props.vacation.destination}</h3> */}
+        <img
+          style={{ borderRadius: "15px" }}
+          width={"400px"}
+          height={"250px"}
+          src={props.vacation.image}
+          alt={props.vacation.destination}
+        />
+      </div>
+      <div className="description">
+        <p>{props.vacation.description}</p>
+      </div>
+      <p>
+        <strong>Price:</strong> ${props.vacation.price}
+      </p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+        }}
+      >
         <Button
+          style={{ height: "40px" }}
           type="button"
           label={props.vacation.isSubscribed ? "Unsubscribe" : "Subscribe"}
           icon={
@@ -55,8 +59,20 @@ function VacationCard(props: VacationCardProps) {
             }
           }}
         />
-      </Card>
-    </div>
+
+        <p
+          style={{
+            border: "1px solid black",
+            borderRadius: "15px",
+            position: "relative",
+            bottom: "17px",
+            padding: "10px",
+          }}
+        >
+          <strong>Subscribers:</strong> {props.vacation.subscribers}
+        </p>
+      </div>
+    </Card>
   )
 }
 

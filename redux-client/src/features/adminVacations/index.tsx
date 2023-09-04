@@ -112,7 +112,13 @@ export default function AdminVacations() {
             totalRecords={vacations.length}
             onPageChange={handlePageChange}
           />
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "50px",
+            }}
+          >
             <Button
               style={{ width: "270px", height: "50px" }}
               type="button"
@@ -132,7 +138,7 @@ export default function AdminVacations() {
               }}
             />
           </div>
-          <div style={{ marginTop: "50px" }} className="vacation-grid">
+          <div className="vacation-grid">
             {paginatedVacations.map((v, index) => (
               <AdminVacationCard
                 key={index}

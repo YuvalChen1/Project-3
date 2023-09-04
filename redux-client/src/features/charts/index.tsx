@@ -57,6 +57,26 @@ export default function VacationChart() {
     }
   }
 
+  const generateCSVData = () => {
+    const csvContent =
+      "Destination,Subscribers\n" +
+      vacationNames
+        .map((name, index) => `${name},${subscribers[index]}`)
+        .join("\n")
+    return csvContent
+  }
+
+  const downloadCSV = () => {
+    const csvData = generateCSVData()
+    const blob = new Blob([csvData], { type: "text/csv" })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "vacations_data.csv"
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
+
   useEffect(() => {
     const canvasElement = document.getElementById(
       "vacation-chart",
@@ -76,15 +96,22 @@ export default function VacationChart() {
         chartRef.current.destroy()
       }
     }
-  }, [dispatch, userId])
+  }, [])
 
   return (
     <div>
+      <h1 style={{ textAlign: "center", marginTop: "50px" }}>Vacations Data</h1>
       <Button
         style={{ marginTop: "20px" }}
         label="Go Back"
         icon="pi pi-arrow-left"
         onClick={() => navigate("/admin-vacations")}
+      />
+      <Button
+        style={{ marginTop: "20px", marginLeft: "10px" }}
+        label="Download CSV"
+        icon="pi pi-download"
+        onClick={downloadCSV}
       />
       <Toast ref={toast} />
       <canvas id="vacation-chart" className="vacation-chart"></canvas>

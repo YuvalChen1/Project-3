@@ -33,6 +33,7 @@ function middlewareLogin(req, res, next) {
 
 authRouter.post("/login", middlewareLogin, async function (req, res, next) {
   const { email, password } = req.body;
+  const tokenExpiration = Date.now() + 60 * 60 * 1000;
   try {
     const { result, userRecord } = await login(email, password);
     if (!result) throw new Error();
@@ -44,6 +45,7 @@ authRouter.post("/login", middlewareLogin, async function (req, res, next) {
     res.json({
       token: signedToken,
       userRecord: userRecord,
+      tokenExpiration: tokenExpiration,
     });
   } catch (error) {
     logger.error(error.message);
@@ -56,7 +58,7 @@ function middlewareSignIn(req, res, next) {
     signupSchema.parse(req.body);
     return next();
   } catch (error) {
-    return res.status(400).send("Error");
+    return res.status(400).send("Error Bad Request");
   }
 }
 

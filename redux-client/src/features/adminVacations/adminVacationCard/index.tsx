@@ -11,31 +11,34 @@ interface VacationCardProps {
 
 function AdminVacationCard(props: VacationCardProps) {
   return (
-    <div className="vacation-card">
-      <Card title={props.vacation.destination}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            width={"400px"}
-            height={"250px"}
-            src={props.vacation.image}
-            alt={props.vacation.destination}
-          />
-        </div>
-        <p>
-          <strong>Destination:</strong> {props.vacation.destination}
-        </p>
-        <p>
-          <strong>Description:</strong> {props.vacation.description}
-        </p>
-        <p>
-          <strong>Price:</strong> ${props.vacation.price}
-        </p>
-        <p>
-          {" "}
-          <i className="pi pi-calendar"></i> :
-          {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
-          {new Date(props.vacation.endDate).toLocaleDateString()}
-        </p>
+    <Card
+      className="vacation-card"
+      // style={{ backgroundColor: "grey", color: "white" }}
+      title={props.vacation.destination}
+    >
+      <p>
+        {" "}
+        <i className="pi pi-calendar"></i> :
+        {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
+        {new Date(props.vacation.endDate).toLocaleDateString()}
+      </p>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        {/* <h3 className="vacation-title">{props.vacation.destination}</h3> */}
+        <img
+          style={{ borderRadius: "15px" }}
+          width={"400px"}
+          height={"250px"}
+          src={props.vacation.image}
+          alt={props.vacation.destination}
+        />
+      </div>
+      <div className="description">
+        <p>{props.vacation.description}</p>
+      </div>
+      <p>
+        <strong>Price:</strong> ${props.vacation.price}
+      </p>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button
           type="button"
           label={"Edit"}
@@ -45,6 +48,7 @@ function AdminVacationCard(props: VacationCardProps) {
           }}
         />
         <Button
+          style={{ backgroundColor: "rgb(201, 23, 23)" }}
           type="button"
           label={"Delete"}
           icon={"pi pi-trash"}
@@ -52,8 +56,8 @@ function AdminVacationCard(props: VacationCardProps) {
             props.onDelete(props.vacation.id)
           }}
         />
-      </Card>
-    </div>
+      </div>
+    </Card>
   )
 }
 

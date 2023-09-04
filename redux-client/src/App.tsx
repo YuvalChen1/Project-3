@@ -6,6 +6,7 @@ import "primeicons/primeicons.css"
 import { Link, Route, Routes, Navigate, useNavigate } from "react-router-dom"
 import React, { useEffect, useState } from "react"
 import { Button } from "primereact/button"
+import Swal from "sweetalert2"
 import Login from "./features/login"
 import SignUp from "./features/sign-up"
 import Vacations from "./features/vacations"
@@ -94,12 +95,45 @@ const routes: Array<IRoute> = [
 
 function App() {
   const navigate = useNavigate()
-  const token = localStorage.getItem("token")
   const role = JSON.parse(localStorage.getItem("userRecord") as any)?.role
   const firstName = JSON.parse(
     localStorage.getItem("userRecord") as any,
   )?.firstName
-  const isLoggedIn = token
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const tokenExpiration = localStorage.getItem("tokenExpiration")
+
+    if (token) {
+      const currentTimestamp = new Date().getTime()
+      if (tokenExpiration) {
+        const expirationTimestamp = parseInt(tokenExpiration, 10)
+        if (currentTimestamp < expirationTimestamp) {
+          setIsLoggedIn(true)
+        } else {
+          // Token has expired, handle it accordingly
+          // For example, show a message and navigate to the login page
+          Swal.fire({
+            title: "Session Expiration",
+            text: "Your Session Has Expired",
+            icon: "warning",
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ok",
+          })
+
+          // alert("Your session has expired")
+          navigate("/login")
+        }
+      } else {
+        // Token expiration not found, assume it has expired
+        alert("Your session has expired")
+        navigate("/login")
+      }
+    }
+  }, [navigate])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -155,7 +189,7 @@ function App() {
         )}
       </div>
 
-      <div className="main-content" style={{ marginTop: "50px" }}>
+      <div className="main-content">
         <Routes>
           {routes.map((route) => {
             if (!route.roles || route.roles.includes(role)) {

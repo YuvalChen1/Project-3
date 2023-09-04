@@ -46,6 +46,10 @@ function Login() {
             "userRecord",
             JSON.stringify(response.payload.userRecord),
           )
+          localStorage.setItem(
+            "tokenExpiration",
+            response.payload.tokenExpiration,
+          )
           const role = JSON.parse(
             localStorage.getItem("userRecord") as any,
           )?.role

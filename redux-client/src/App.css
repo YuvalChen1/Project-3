@@ -14,14 +14,17 @@
 }
 
 .app-container {
-  padding: 10px;
+  /* padding: 10px; */
+  /* height: 100vh; */
 }
 
 .main-content {
-  margin-top: 50px;
+  box-sizing: border-box;
   background-color: #f7f7f7;
-  padding: 20px;
+  padding: 40px;
   border-radius: 10px;
+  /* height: fit-content */
+  min-height: 100vh
 }
 
 .welcome-message {

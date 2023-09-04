@@ -140,7 +140,7 @@ export default function Vacations() {
               ></Checkbox>
             </h4>
           </div>
-          <div style={{ marginTop: "50px" }} className="vacation-grid">
+          <div className="vacation-grid">
             {unStartedVacations.map((v, index) => (
               <VacationCard
                 key={index}
