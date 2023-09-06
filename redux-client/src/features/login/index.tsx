@@ -23,6 +23,7 @@ function Login() {
   useEffect(() => {
     localStorage.removeItem("token")
     localStorage.removeItem("userRecord")
+    localStorage.removeItem("tokenExpiration")
   }, [])
 
   const handleEmailChange = (value: string) => {

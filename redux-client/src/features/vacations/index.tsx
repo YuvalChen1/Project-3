@@ -21,7 +21,7 @@ export default function Vacations() {
   const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
   const [first, setFirst] = useState(0)
   const [showSubscribed, setShowSubscribed] = useState(false)
-  const [showUnStarted, setShowUnStarted] = useState(false)
+  const [showFuture, setShowFuture] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const toast = useRef<Toast | null>(null)
   const itemsPerPage = 9
@@ -95,13 +95,13 @@ export default function Vacations() {
   }
 
   const handleUnStartedCheckboxChange = () => {
-    setShowUnStarted(!showUnStarted)
+    setShowFuture(!showFuture)
   }
   const subscribedVacations = showSubscribed
     ? paginatedVacations.filter((v) => v.isSubscribed)
     : paginatedVacations
 
-  const unStartedVacations = showUnStarted
+  const futureVacations = showFuture
     ? subscribedVacations.filter((v) => new Date(v.startDate) > new Date())
     : subscribedVacations
 
@@ -124,24 +124,26 @@ export default function Vacations() {
             totalRecords={vacations.length}
             onPageChange={handlePageChange}
           />
-          <div style={{ marginTop: "30px" }}>
+          <div style={{ marginTop: "30px", display: "flex", gap: "40px" }}>
             <h4>
               ~Show Subscribed Vacations
               <Checkbox
+                style={{ color: "black" }}
                 checked={showSubscribed}
                 onChange={handleSubscribeCheckboxChange}
               ></Checkbox>
             </h4>
             <h4>
-              ~Show UnStarted Vacations
+              ~Show Future Vacations
               <Checkbox
-                checked={showUnStarted}
+                style={{ color: "black" }}
+                checked={showFuture}
                 onChange={handleUnStartedCheckboxChange}
               ></Checkbox>
             </h4>
           </div>
           <div className="vacation-grid">
-            {unStartedVacations.map((v, index) => (
+            {futureVacations.map((v, index) => (
               <VacationCard
                 key={index}
                 vacation={{
