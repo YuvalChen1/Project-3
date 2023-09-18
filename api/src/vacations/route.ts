@@ -30,8 +30,19 @@ vacationsRouter.get(
   }
 );
 
+function isAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const role = (req as any).currentUserRole;
+    if (role === "admin") return next();
+    throw new Error();
+  } catch (error) {
+    return res.status(403).send();
+  }
+}
+
 vacationsRouter.post(
   "/new",
+  isAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       vacationBody.parse(req.body);
@@ -46,6 +57,7 @@ vacationsRouter.post(
 
 vacationsRouter.put(
   "/edit",
+  isAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       vacationBody.parse(req.body);
@@ -60,6 +72,7 @@ vacationsRouter.put(
 
 vacationsRouter.delete(
   "/delete",
+  isAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.query.id;

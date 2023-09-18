@@ -104,6 +104,7 @@ const routes: Array<IRoute> = [
 function App() {
   const navigate = useNavigate()
   const role = JSON.parse(localStorage.getItem("userRecord") as any)?.role
+  const token = localStorage.getItem("token")
   const firstName = JSON.parse(
     localStorage.getItem("userRecord") as any,
   )?.firstName
@@ -173,7 +174,7 @@ function App() {
           }
           return null
         })} */}
-        {isLoggedIn && (
+        {isLoggedIn && token && (
           <div className="logout-button">
             <Button onClick={handleLogout}>Log Out</Button>
           </div>

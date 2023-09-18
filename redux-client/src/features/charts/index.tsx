@@ -11,11 +11,10 @@ export default function VacationChart() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const vacations = useAppSelector((state) => state.vacations.vacation)
-  console.log(vacations)
-
-  const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
   const vacationNames = vacations.map((vacation) => vacation.destination)
   const subscribers = vacations.map((vacation) => vacation.subscribers)
+
+  const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
   const [isLoading, setIsLoading] = useState(false)
   const toast = useRef<Toast | null>(null)
 
@@ -78,25 +77,28 @@ export default function VacationChart() {
   }
 
   useEffect(() => {
+    handleGetVacations()
+
     const canvasElement = document.getElementById(
       "vacation-chart",
     ) as HTMLCanvasElement | null
 
-    if (canvasElement) {
+    console.log(vacations.length)
+
+    if (canvasElement && !isLoading && vacations.length > 1) {
       chartRef.current = new Chart(canvasElement, {
         type: "bar",
         data: chartData,
         options: chartOptions,
       })
     }
-    handleGetVacations()
 
     return () => {
       if (chartRef.current) {
         chartRef.current.destroy()
       }
     }
-  }, [])
+  }, [isLoading])
 
   return (
     <div>

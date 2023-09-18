@@ -54,6 +54,7 @@ function verifyAuthentication(req: Request, res: Response, next) {
     } else {
       (req as any).currentUserName = decoded.userName;
       (req as any).currentUserId = decoded.id;
+      (req as any).currentUserRole = decoded.role;
 
       console.log(
         `${new Date().toISOString()} => requestId: ${res.getHeader(

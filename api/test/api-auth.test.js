@@ -1,6 +1,8 @@
 const { expect } = require("chai");
 const axios = require("axios");
 
+const url = "http://localhost:4000";
+
 describe("POST /auth/sign-up", function () {
   it("Create new user Success ", async function () {
     const dummyUser = {
@@ -9,10 +11,7 @@ describe("POST /auth/sign-up", function () {
       firstName: "Yuval",
       lastName: "Chen",
     };
-    const result = await axios.post(
-      "http://localhost:4000/auth/sign-up",
-      dummyUser
-    );
+    const result = await axios.post(`${url}/auth/sign-up`, dummyUser);
     expect(result.status).equal(200);
   });
   it("Create new user With bad request (Password) ", async function () {
@@ -24,7 +23,7 @@ describe("POST /auth/sign-up", function () {
         firstName: "Yuval",
         lastName: "Chen",
       };
-      await axios.post("http://localhost:4000/auth/sign-up", dummyUser);
+      await axios.post(`${url}/auth/sign-up`, dummyUser);
       throw new Error("TEST FAILED");
     } catch (error) {
       expect(error?.response.status).equal(400);
@@ -39,12 +38,9 @@ describe("POST /auth/sign-up", function () {
         firstName: "Yuval",
         lastName: "Chen",
       };
-      const result1 = await axios.post(
-        "http://localhost:4000/auth/sign-up",
-        dummyUser
-      );
+      const result1 = await axios.post(`${url}/auth/sign-up`, dummyUser);
       expect(result1.data.message).equal("user successfully added!");
-      await axios.post("http://localhost:4000/auth/sign-up", dummyUser);
+      await axios.post(`${url}/auth/sign-up`, dummyUser);
       throw new Error("TEST FAILED");
     } catch (error) {
       expect(error?.response.status).equal(500); // returning next to error handler and not 409 directly
@@ -55,13 +51,13 @@ describe("POST /auth/sign-up", function () {
 describe("POST /auth/login", function () {
   it("Login with user Success ", async function () {
     const dummyUser = {
-      email: `email${Date.now()}@gmail.com`,
+      email: `root@root.com`,
       password: "1234",
-      firstName: "Yuval",
-      lastName: "Chen",
+      firstName: "Test",
+      lastName: "Test",
     };
-    await axios.post("http://localhost:4000/auth/sign-up", dummyUser);
-    const resultLogin = await axios.post("http://localhost:4000/auth/login", {
+
+    const resultLogin = await axios.post(`${url}/auth/login`, {
       email: dummyUser.email,
       password: dummyUser.password,
     });
@@ -75,7 +71,7 @@ describe("POST /auth/login", function () {
         firstName: "Yuval",
         lastName: "Chen",
       };
-      await axios.post("http://localhost:4000/auth/login", {
+      await axios.post(`${url}/auth/login`, {
         email: dummyUser.email,
         password: dummyUser.password,
       });
