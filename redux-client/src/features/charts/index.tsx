@@ -4,10 +4,10 @@ import { Bar } from "react-chartjs-2"
 import Chart from "chart.js/auto"
 import { getVacations } from "../vacations/vacationsSlice"
 import { Button } from "primereact/button"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import { Toast } from "primereact/toast"
 
-export default function VacationChart() {
+const VacationChart: React.FC = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const vacations = useAppSelector((state) => state.vacations.vacation)
@@ -120,3 +120,5 @@ export default function VacationChart() {
     </div>
   )
 }
+
+export default VacationChart

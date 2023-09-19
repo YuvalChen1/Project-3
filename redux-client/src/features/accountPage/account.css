@@ -1,0 +1,46 @@
+/* Add these styles to your AccountPage.css */
+
+.account-page-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .user-info {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .user-info h3 {
+    margin: 10px 0;
+  }
+  
+  .change-password-button {
+    margin-bottom: 20px;
+  }
+  
+  .change-password-button button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .change-password-button button:hover {
+    background-color: #0056b3;
+  }
+  
+  .back-link {
+    display: block;
+    margin-top: 20px;
+  }
+  

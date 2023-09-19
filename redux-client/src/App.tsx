@@ -19,6 +19,8 @@ import HomePage from "./features/homePage"
 import Logo from "./features/ui-components/logo"
 import SideNav from "./features/ui-components/side-nav"
 import Footer from "./features/ui-components/footer"
+import AccountPage from "./features/accountPage"
+import LogoutButton from "./features/ui-components/logout-button"
 
 interface IRoute {
   path: string
@@ -101,6 +103,16 @@ const routes: Array<IRoute> = [
     label: "Chart",
     roles: ["admin"],
   },
+  {
+    path: "/account",
+    component: (
+      <ProtectedRoute>
+        <AccountPage />
+      </ProtectedRoute>
+    ),
+    key: "account",
+    label: "account",
+  },
 ]
 
 function App() {
@@ -159,14 +171,6 @@ function App() {
     }
   }, [navigate])
 
-  const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("userRecord")
-    localStorage.removeItem("tokenExpiration")
-    setIsLoggedIn(false)
-    navigate("/login")
-  }
-
   return (
     <div className="app-container">
       <div className="header">
@@ -177,14 +181,8 @@ function App() {
         )}
         <Logo></Logo>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          <div style={{ marginRight: "42px" }}>
-            {isLoggedIn && token && (
-              <div className="logout-button">
-                <Button style={{}} onClick={handleLogout}>
-                  Log Out
-                </Button>
-              </div>
-            )}
+          <div>
+            {isLoggedIn && token && <LogoutButton></LogoutButton>}
           </div>
           <div style={{ position: "fixed", left: "97%" }}>
             <Button
@@ -195,16 +193,6 @@ function App() {
             <SideNav visible={isSideNavVisible} onHide={handleHideSideNav} />
           </div>
         </div>
-        {/* {routes.map((route) => {
-          if (!route.roles || route.roles.includes(role)) {
-            return (
-              <Link key={route.label} to={route.path}>
-                {route.label} |
-              </Link>
-            )
-          }
-          return null
-        })} */}
       </div>
 
       <div className="main-content">

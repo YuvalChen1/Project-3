@@ -9,7 +9,7 @@ interface IPayload {
   firstName: string;
   lastName: string;
 }
-const saltRounds = 10;
+
 export default async function signUp(signUpPayload: IPayload): Promise<number> {
   const { email, firstName, lastName, password } = signUpPayload;
   const hashedPassword = await getHashedPassword(password);
@@ -30,6 +30,7 @@ export async function getHashedPassword(
   password: string,
   salt?: string
 ): Promise<{ password: string; salt?: string }> {
+  const saltRounds = 10;
   const s = salt || bcrypt.genSaltSync(saltRounds);
   const hashed = await bcrypt.hash(password, s);
   return { password: hashed, salt: s };

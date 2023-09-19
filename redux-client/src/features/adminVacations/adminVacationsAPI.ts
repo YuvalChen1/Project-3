@@ -83,13 +83,13 @@ export async function editVacationByIdApi(vacation: IEditVacation) {
     )
 
     if (response.status === 200) {
-      return { message: "New Vacation Added" }
+      return { message: "Vacation Edited Successfully" }
     } else {
       console.error("API request failed with status:", response.status)
-      throw new Error("Adding New Vacation Failed")
+      throw new Error("Vacation Edit Failed")
     }
   } catch (error) {
     console.error("API request failed with error:", error)
-    throw new Error("Adding New Vacation Failed")
+    throw new Error("Vacation Edit Failed")
   }
 }

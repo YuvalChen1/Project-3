@@ -6,6 +6,7 @@ import { logger } from "../logger";
 import signUp from "./handlers/signup";
 import { login } from "./handlers/login";
 import { ifUserExistsByEmailApi } from "../verify/checkIfUserExists";
+import { changePasswordApi } from "../user/handlers/password-change";
 dotenv.config();
 
 const authRouter = express.Router();
@@ -15,6 +16,10 @@ export const signupSchema = zod.object({
   password: zod.string().min(4).max(12),
   firstName: zod.string().max(100),
   lastName: zod.string().max(100),
+});
+
+const passwordScheme = zod.object({
+  password: zod.string().min(4),
 });
 
 const loginSchema = zod.object({
@@ -72,6 +77,18 @@ authRouter.post("/sign-up", middlewareSignIn, async function (req, res, next) {
     } else {
       throw new Error("User Already Exists");
     }
+  } catch (error) {
+    logger.error(error.message);
+    return next(error);
+  }
+});
+
+authRouter.post("/pw-change", async function (req, res, next) {
+  try {
+    const { password, userId } = req.body;
+    passwordScheme.parse(password);
+    await changePasswordApi(password, userId);
+    res.json({ message: "ok" });
   } catch (error) {
     logger.error(error.message);
     return next(error);

@@ -10,6 +10,7 @@ import { addRequestId } from "./middleware/addRequestId";
 import { addRequestStarted } from "./middleware/addRequestStarted";
 import { addRequestFinished } from "./middleware/addRequestFinished";
 import { followersRouter } from "./followers/route";
+import { userRouter } from "./user/route";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/auth", authRouter);
 app.use(verifyAuthentication);
 app.use("/vacations", vacationsRouter);
 app.use("/followers", followersRouter);
+app.use("/user", userRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error({ message: err.message });

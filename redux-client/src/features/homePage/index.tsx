@@ -1,16 +1,53 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React, { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import Logo from "../ui-components/logo"
 import "./HomePage.css"
 import ReviewList from "../ui-components/review-list"
+import { Button } from "primereact/button"
+import SideNav from "../ui-components/side-nav"
+import LogoutButton from "../ui-components/logout-button"
 
 const HomePage = () => {
+  const [isSideNavVisible, setIsSideNavVisible] = useState(false)
+
+  const handleShowSideNav = () => {
+    setIsSideNavVisible(true)
+  }
+
+  const handleHideSideNav = () => {
+    setIsSideNavVisible(false)
+  }
+
+  const token = localStorage.getItem("token")
+  const firstName = JSON.parse(
+    localStorage.getItem("userRecord") as any,
+  )?.firstName
   return (
     <div className="home-page-container">
       <header className="header">
         <Logo />
-        <h2>Welcome to Vacation Paradise</h2>
-        <p>Your Ultimate Destination for Dream Vacations</p>
+        {token ? (
+          <div>
+            <h2>Welcome {firstName}</h2>
+          </div>
+        ) : (
+          <h2>Welcome to Vacation Paradise</h2>
+        )}
+        {token ? (
+          <div style={{ display: "flex" }}>
+            <LogoutButton></LogoutButton>
+            <div style={{ position: "fixed", left: "97%" }}>
+              <Button
+                style={{ borderRadius: "30px", backgroundColor: "#55c2da" }}
+                icon="pi pi-bars"
+                onClick={handleShowSideNav}
+              ></Button>
+              <SideNav visible={isSideNavVisible} onHide={handleHideSideNav} />
+            </div>
+          </div>
+        ) : (
+          <p>Your Ultimate Destination for Dream Vacations</p>
+        )}
       </header>
 
       <div className="features-container">
