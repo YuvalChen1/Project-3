@@ -26,9 +26,9 @@ function SignUp() {
   const toast = useRef<Toast | null>(null)
 
   useEffect(() => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("userRecord")
-    localStorage.removeItem("tokenExpiration")
+    // localStorage.removeItem("token")
+    // localStorage.removeItem("userRecord")
+    // localStorage.removeItem("tokenExpiration")
   }, [])
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {

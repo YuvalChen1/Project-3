@@ -21,9 +21,9 @@ function Login() {
   const toast = useRef<Toast | null>(null)
 
   useEffect(() => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("userRecord")
-    localStorage.removeItem("tokenExpiration")
+    // localStorage.removeItem("token")
+    // localStorage.removeItem("userRecord")
+    // localStorage.removeItem("tokenExpiration")
   }, [])
 
   const handleEmailChange = (value: string) => {

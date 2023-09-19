@@ -1,29 +1,32 @@
-import React from "react"
-import { Card } from "primereact/card"
-import { Button } from "primereact/button"
-import { IVacation } from "../../vacations/vacationsAPI"
+import React, { useState } from "react";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { IVacation } from "../../vacations/vacationsAPI";
 
 interface VacationCardProps {
-  vacation: IVacation
-  onEdit: Function
-  onDelete: Function
+  vacation: IVacation;
+  onEdit: Function;
+  onDelete: Function;
 }
 
 function AdminVacationCard(props: VacationCardProps) {
+  const [showFullDescription, setShowFullDescription] = useState(false);
+
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  };
+
   return (
     <Card
       className="vacation-card"
-      // style={{ backgroundColor: "grey", color: "white" }}
       title={props.vacation.destination}
     >
       <p>
-        {" "}
         <i className="pi pi-calendar"></i> :
         {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
         {new Date(props.vacation.endDate).toLocaleDateString()}
       </p>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        {/* <h3 className="vacation-title">{props.vacation.destination}</h3> */}
         <img
           style={{ borderRadius: "15px" }}
           width={"400px"}
@@ -32,8 +35,15 @@ function AdminVacationCard(props: VacationCardProps) {
           alt={props.vacation.destination}
         />
       </div>
-      <div className="description">
-        <p>{props.vacation.description}</p>
+      <div className="description" onClick={toggleDescription}>
+        {showFullDescription ? (
+          <p>{props.vacation.description}</p>
+        ) : (
+          <p>
+            {props.vacation.description.substring(0, 200)}
+            {props.vacation.description.length > 200 ? "..." : ""}
+          </p>
+        )}
       </div>
       <p>
         <strong>Price:</strong> ${props.vacation.price}
@@ -44,7 +54,7 @@ function AdminVacationCard(props: VacationCardProps) {
           label={"Edit"}
           icon={"pi pi-file-edit"}
           onClick={() => {
-            props.onEdit(props.vacation.id)
+            props.onEdit(props.vacation.id);
           }}
         />
         <Button
@@ -53,12 +63,12 @@ function AdminVacationCard(props: VacationCardProps) {
           label={"Delete"}
           icon={"pi pi-trash"}
           onClick={() => {
-            props.onDelete(props.vacation.id)
+            props.onDelete(props.vacation.id);
           }}
         />
       </div>
     </Card>
-  )
+  );
 }
 
-export default AdminVacationCard
+export default AdminVacationCard;

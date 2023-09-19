@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Card } from "primereact/card"
 import { Button } from "primereact/button"
 import { IVacation } from "../vacationsAPI"
@@ -10,13 +10,19 @@ interface VacationCardProps {
 }
 
 function VacationCard(props: VacationCardProps) {
+  const [showFullDescription, setShowFullDescription] = useState(false)
+
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription)
+  }
+
   return (
     <Card
       className="vacation-card"
       // style={{ backgroundColor: "grey", color: "white" }}
       title={props.vacation.destination}
     >
-      <p style={{backgroundColor:"turquoise"}}>
+      <p style={{ backgroundColor: "turquoise" }}>
         {" "}
         <i className="pi pi-calendar"></i> :
         {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
@@ -32,8 +38,15 @@ function VacationCard(props: VacationCardProps) {
           alt={props.vacation.destination}
         />
       </div>
-      <div className="description">
-        <p>{props.vacation.description}</p>
+      <div className="description" onClick={toggleDescription}>
+        {showFullDescription ? (
+          <p>{props.vacation.description}</p>
+        ) : (
+          <p>
+            {props.vacation.description.substring(0, 200)}
+            {props.vacation.description.length > 200 ? "..." : ""}
+          </p>
+        )}
       </div>
       <p>
         <strong>Price:</strong> ${props.vacation.price}

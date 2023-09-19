@@ -106,7 +106,7 @@ export default function Vacations() {
     : subscribedVacations
 
   return (
-    <div style={{ marginTop: "80px" }}>
+    <div style={{ marginTop: "150px" }}>
       {isLoading && (
         <div>
           {" "}
@@ -142,7 +142,7 @@ export default function Vacations() {
               ></Checkbox>
             </h4>
           </div>
-          <div className="vacation-grid">
+          <div className="vacation-grid" style={{ marginBottom: "150px" }}>
             {futureVacations.map((v, index) => (
               <VacationCard
                 key={index}

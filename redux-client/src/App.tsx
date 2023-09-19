@@ -17,6 +17,8 @@ import EditVacation from "./features/editVactions"
 import VacationChart from "./features/charts"
 import HomePage from "./features/homePage"
 import Logo from "./features/ui-components/logo"
+import SideNav from "./features/ui-components/side-nav"
+import Footer from "./features/ui-components/footer"
 
 interface IRoute {
   path: string
@@ -110,6 +112,16 @@ function App() {
   )?.firstName
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
+  const [isSideNavVisible, setIsSideNavVisible] = useState(false)
+
+  const handleShowSideNav = () => {
+    setIsSideNavVisible(true)
+  }
+
+  const handleHideSideNav = () => {
+    setIsSideNavVisible(false)
+  }
+
   useEffect(() => {
     const token = localStorage.getItem("token")
     const tokenExpiration = localStorage.getItem("tokenExpiration")
@@ -164,6 +176,25 @@ function App() {
           </div>
         )}
         <Logo></Logo>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <div style={{ marginRight: "42px" }}>
+            {isLoggedIn && token && (
+              <div className="logout-button">
+                <Button style={{}} onClick={handleLogout}>
+                  Log Out
+                </Button>
+              </div>
+            )}
+          </div>
+          <div style={{ position: "fixed", left: "97%" }}>
+            <Button
+              style={{ borderRadius: "30px", backgroundColor: "#55c2da" }}
+              icon="pi pi-bars"
+              onClick={handleShowSideNav}
+            ></Button>
+            <SideNav visible={isSideNavVisible} onHide={handleHideSideNav} />
+          </div>
+        </div>
         {/* {routes.map((route) => {
           if (!route.roles || route.roles.includes(role)) {
             return (
@@ -174,11 +205,6 @@ function App() {
           }
           return null
         })} */}
-        {isLoggedIn && token && (
-          <div className="logout-button">
-            <Button onClick={handleLogout}>Log Out</Button>
-          </div>
-        )}
       </div>
 
       <div className="main-content">
@@ -200,6 +226,7 @@ function App() {
           )}
         </Routes>
       </div>
+      <Footer></Footer>
     </div>
   )
 }

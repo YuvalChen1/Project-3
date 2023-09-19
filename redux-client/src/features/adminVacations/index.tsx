@@ -93,7 +93,7 @@ export default function AdminVacations() {
   }, [])
 
   return (
-    <div style={{ marginTop: "80px" }}>
+    <div style={{ marginTop: "150px" }}>
       {isLoading && (
         <div>
           {" "}
@@ -138,7 +138,7 @@ export default function AdminVacations() {
               }}
             />
           </div>
-          <div className="vacation-grid">
+          <div className="vacation-grid" style={{ marginBottom: "150px" }}>
             {paginatedVacations.map((v, index) => (
               <AdminVacationCard
                 key={index}

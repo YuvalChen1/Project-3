@@ -26,7 +26,7 @@ function NewVacation() {
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const loading = useAppSelector((state) => state.login.loading)
+  const [isLoading, setIsLoading] = useState(false)
   const toast = useRef<Toast | null>(null)
 
   const handleAddVacation = async () => {
@@ -63,6 +63,7 @@ function NewVacation() {
     try {
       const response = await dispatch(addNewVacation(vacationPayload))
       if (addNewVacation.fulfilled.match(response)) {
+        setIsLoading(true)
         toast.current?.show({
           severity: "success",
           summary: "New Vacation Added",
@@ -81,12 +82,14 @@ function NewVacation() {
       }
     } catch (error) {
       console.error("Adding New Vacation Failed:", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
     <div
-      style={{ marginTop: "50px" }}
+      style={{ marginTop: "150px", marginBottom: "150px" }}
       className="p-d-flex p-jc-center p-ai-center vacation-container"
     >
       <Card
@@ -206,14 +209,14 @@ function NewVacation() {
             label="Add New Vacation"
             icon="pi pi-plus"
             onClick={handleAddVacation}
-            disabled={loading}
+            disabled={isLoading}
           />
           <Button
             style={{ marginTop: "20px" }}
             label="Go Back"
             icon="pi pi-arrow-left"
             onClick={() => navigate("/admin-vacations")}
-            disabled={loading}
+            disabled={isLoading}
           />
         </div>
       </Card>
