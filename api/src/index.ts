@@ -20,6 +20,8 @@ app.use(cors());
 app.use(addRequestId);
 app.use(addRequestStarted);
 app.use(addRequestFinished);
+app.use("/uploads", express.static("uploads"));
+app.use("/uploads", cors());
 app.get("/health-check", function (req, res, next) {
   res.send(`API IS OK ${new Date().toISOString()}`);
 });

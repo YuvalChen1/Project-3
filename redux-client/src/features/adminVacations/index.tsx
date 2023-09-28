@@ -10,14 +10,17 @@ import { deleteVacation } from "./adminVacationsSlice"
 import AdminVacationCard from "./adminVacationCard"
 import { Toast } from "primereact/toast"
 import { ProgressSpinner } from "primereact/progressspinner"
+import { loginUser } from "../login/loginSlice"
 
 export default function AdminVacations() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const vacations = useAppSelector((state) => state.vacations.vacation)
   const status = useAppSelector((state) => state.vacations.status)
+  const email = localStorage.getItem("userEmail")
+  const password = localStorage.getItem("userPassword")
+  const [userId, setUserId] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
-  const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
   const toast = useRef<Toast | null>(null)
 
   const [first, setFirst] = useState(0)
@@ -88,9 +91,27 @@ export default function AdminVacations() {
     }
   }
 
+  const handleGetUserData = async () => {
+    try {
+      setIsLoading(true)
+      const result = await dispatch(loginUser({ email, password } as any))
+      setUserId(result?.payload?.userRecord?.id)
+    } catch (error) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Get User Data Failed",
+        detail: "Get User Data Failed. Something Went Wrong.",
+      })
+      console.error("Error Get User Data:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
+    handleGetUserData()
     handleGetVacations()
-  }, [])
+  }, [userId])
 
   return (
     <div style={{ marginTop: "150px" }}>

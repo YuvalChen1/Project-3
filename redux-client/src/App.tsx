@@ -2,9 +2,10 @@ import "./App.css"
 import "primereact/resources/themes/saga-blue/theme.css"
 import "primereact/resources/primereact.min.css"
 import "primeicons/primeicons.css"
+import "react-datepicker/dist/react-datepicker.css"
 
 import { Link, Route, Routes, Navigate, useNavigate } from "react-router-dom"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Button } from "primereact/button"
 import Swal from "sweetalert2"
 import Login from "./features/login"
@@ -21,6 +22,11 @@ import SideNav from "./features/ui-components/side-nav"
 import Footer from "./features/ui-components/footer"
 import AccountPage from "./features/accountPage"
 import LogoutButton from "./features/ui-components/logout-button"
+import AboutPage from "./features/aboutPage"
+import { useAppDispatch, useAppSelector } from "./app/hooks"
+import { loginUser } from "./features/login/loginSlice"
+import { Toast } from "primereact/toast"
+import clearLocalStorage from "./features/functions/localStorageClear"
 
 interface IRoute {
   path: string
@@ -36,6 +42,12 @@ const routes: Array<IRoute> = [
     component: <HomePage />,
     key: "home",
     label: "Home",
+  },
+  {
+    path: "/about",
+    component: <AboutPage />,
+    key: "about",
+    label: "About",
   },
   {
     path: "/login",
@@ -117,11 +129,14 @@ const routes: Array<IRoute> = [
 
 function App() {
   const navigate = useNavigate()
-  const role = JSON.parse(localStorage.getItem("userRecord") as any)?.role
+  const dispatch = useAppDispatch()
+  const [role, setRole] = useState("")
+  const firstName = localStorage.getItem("firstName")
+  const email = localStorage.getItem("userEmail")
+  const password = localStorage.getItem("userPassword")
+  const toast = useRef<Toast | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const token = localStorage.getItem("token")
-  const firstName = JSON.parse(
-    localStorage.getItem("userRecord") as any,
-  )?.firstName
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const [isSideNavVisible, setIsSideNavVisible] = useState(false)
@@ -134,7 +149,27 @@ function App() {
     setIsSideNavVisible(false)
   }
 
+  const handleGetUserData = async () => {
+    if (token) {
+      try {
+        setIsLoading(true)
+        const result = await dispatch(loginUser({ email, password } as any))
+        setRole(result?.payload?.userRecord?.role)
+      } catch (error) {
+        toast.current?.show({
+          severity: "error",
+          summary: "Get User Data Failed",
+          detail: "Get User Data Failed. Something Went Wrong.",
+        })
+        console.error("Error Get User Data:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  }
+
   useEffect(() => {
+    handleGetUserData()
     const token = localStorage.getItem("token")
     const tokenExpiration = localStorage.getItem("tokenExpiration")
 
@@ -154,6 +189,7 @@ function App() {
             cancelButtonColor: "#d33",
             confirmButtonText: "Ok",
           })
+          clearLocalStorage()
           navigate("/login")
         }
       } else {
@@ -166,24 +202,25 @@ function App() {
           cancelButtonColor: "#d33",
           confirmButtonText: "Ok",
         })
+        clearLocalStorage()
         navigate("/login")
       }
     }
-  }, [navigate])
+  }, [navigate, role])
 
   return (
     <div className="app-container">
       <div className="header">
         {firstName && isLoggedIn && (
           <div className="welcome-message">
-            <h3>Welcome {firstName}</h3>
+            <h3>
+              Welcome <span style={{ color: "blue" }}>{firstName}</span>
+            </h3>
           </div>
         )}
         <Logo></Logo>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          <div>
-            {isLoggedIn && token && <LogoutButton></LogoutButton>}
-          </div>
+          <div>{isLoggedIn && token && <LogoutButton></LogoutButton>}</div>
           <div style={{ position: "fixed", left: "97%" }}>
             <Button
               style={{ borderRadius: "30px", backgroundColor: "#55c2da" }}
@@ -215,6 +252,7 @@ function App() {
         </Routes>
       </div>
       <Footer></Footer>
+      <Toast ref={toast} />
     </div>
   )
 }

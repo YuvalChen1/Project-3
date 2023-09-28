@@ -1,21 +1,26 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import "./changePw.css"
 import { passwordChange } from "../accountPage/accountApi"
 import Swal from "sweetalert2"
 import { Button } from "primereact/button"
 import { getHashedPassword } from "./hashedPassword"
 import { useNavigate } from "react-router-dom"
+import { loginUser } from "../login/loginSlice"
+import { useAppDispatch } from "../../app/hooks"
+import { Toast } from "primereact/toast"
+import clearLocalStorage from "../functions/localStorageClear"
 
 const ChangePasswordForm = () => {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmNewPassword, setConfirmNewPassword] = useState("")
-  const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
-  const userPassword = JSON.parse(
-    localStorage.getItem("userRecord") as any,
-  )?.password
-  const userSalt = JSON.parse(localStorage.getItem("userRecord") as any)?.salt
+  const [userId, setUserId] = useState(0)
+  const password = localStorage.getItem("userPassword")
+  const email = localStorage.getItem("userEmail")
+  const token = localStorage.getItem("token")
+  const toast = useRef<Toast | null>(null)
   const [formVisible, setFormVisible] = useState(true)
   const [passwordChanged, setPasswordChanged] = useState(false)
 
@@ -29,12 +34,7 @@ const ChangePasswordForm = () => {
     try {
       e.preventDefault()
 
-      const enteredPasswordHash = await getHashedPassword(
-        currentPassword,
-        userSalt,
-      )
-
-      if (enteredPasswordHash.password !== userPassword) {
+      if (currentPassword !== password) {
         setCurrentPasswordValidate(false)
         return
       }
@@ -56,12 +56,9 @@ const ChangePasswordForm = () => {
         setConfirmNewPasswordValid(false)
         return
       }
+      console.log(userId)
 
-      const result = await passwordChange(newPassword, userId)
-
-      if (!result) {
-        throw new Error()
-      }
+      await passwordChange(newPassword, userId)
 
       Swal.fire({
         title: "Password Changed",
@@ -70,16 +67,39 @@ const ChangePasswordForm = () => {
         confirmButtonText: "OK",
       }).then((result) => {
         if (result.isConfirmed) {
+          clearLocalStorage()
           navigate("/login")
-          localStorage.removeItem("token")
-          localStorage.removeItem("userRecord")
-          localStorage.removeItem("tokenExpiration")
         }
       })
     } catch (error) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Failed To Change Password",
+        detail: "Failed To Change Password. Something Went Wrong.",
+      })
       console.log(error)
     }
   }
+
+  const handleGetUserData = async () => {
+    if (token) {
+      try {
+        const result = await dispatch(loginUser({ email, password } as any))
+        setUserId(result?.payload?.userRecord?.id)
+      } catch (error) {
+        toast.current?.show({
+          severity: "error",
+          summary: "Get User Data Failed",
+          detail: "Get User Data Failed. Something Went Wrong.",
+        })
+        console.error("Error Get User Data:", error)
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleGetUserData()
+  }, [token])
 
   return formVisible ? (
     <div className="change-password-form">
@@ -120,7 +140,7 @@ const ChangePasswordForm = () => {
           {!newPasswordValid && (
             <small className="p-error">New Password is required.</small>
           )}
-           {!newPasswordValidate && (
+          {!newPasswordValidate && (
             <small className="p-error">New Password Must Be Different</small>
           )}
         </div>
@@ -141,6 +161,7 @@ const ChangePasswordForm = () => {
           )}
         </div>
         <Button type="submit">Change Password</Button>
+        <Toast ref={toast} />
       </form>
     </div>
   ) : passwordChanged ? (

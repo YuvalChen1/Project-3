@@ -8,17 +8,19 @@ import {
 import { Paginator } from "primereact/paginator"
 import { Checkbox } from "primereact/checkbox"
 import { ProgressSpinner } from "primereact/progressspinner"
-import { ProgressBar } from "primereact/ProgressBar"
-import "./Vacations.css"
-import Footer from "../ui-components/footer"
+import "./vacations.css"
 import VacationCard from "./vacationCard"
 import { Toast } from "primereact/toast"
+import { loginUser } from "../login/loginSlice"
 
 export default function Vacations() {
   const dispatch = useAppDispatch()
   const vacations = useAppSelector((state) => state.vacations.vacation)
   const status = useAppSelector((state) => state.vacations.status)
-  const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
+  const email = localStorage.getItem("userEmail")
+  const password = localStorage.getItem("userPassword")
+  // const userId = JSON.parse(localStorage.getItem("userRecord") as any)?.id
+  const [userId, setUserId] = useState(0)
   const [first, setFirst] = useState(0)
   const [showSubscribed, setShowSubscribed] = useState(false)
   const [showFuture, setShowFuture] = useState(false)
@@ -86,9 +88,27 @@ export default function Vacations() {
     }
   }
 
+  const handleGetUserData = async () => {
+    try {
+      setIsLoading(true)
+      const result = await dispatch(loginUser({ email, password } as any))
+      setUserId(result?.payload?.userRecord?.id)
+    } catch (error) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Get User Data Failed",
+        detail: "Get User Data Failed. Something Went Wrong.",
+      })
+      // console.error("Error Get User Data:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
+    handleGetUserData()
     handleGetVacations()
-  }, [])
+  }, [userId])
 
   const handleSubscribeCheckboxChange = () => {
     setShowSubscribed(!showSubscribed)

@@ -1,14 +1,26 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Logo from "../ui-components/logo"
-import "./HomePage.css"
+import "./homePage.css"
 import ReviewList from "../ui-components/review-list"
 import { Button } from "primereact/button"
 import SideNav from "../ui-components/side-nav"
 import LogoutButton from "../ui-components/logout-button"
 
 const HomePage = () => {
+  const reviewSection = useRef<HTMLElement>(null)
   const [isSideNavVisible, setIsSideNavVisible] = useState(false)
+  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0)
+  const token = localStorage.getItem("token")
+  const firstName = localStorage.getItem("firstName")
+
+  const scrollToSection = (ref: any) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" })
+      setCurrentSectionIndex(0)
+    }
+  }
+  //framer motion
 
   const handleShowSideNav = () => {
     setIsSideNavVisible(true)
@@ -18,17 +30,15 @@ const HomePage = () => {
     setIsSideNavVisible(false)
   }
 
-  const token = localStorage.getItem("token")
-  const firstName = JSON.parse(
-    localStorage.getItem("userRecord") as any,
-  )?.firstName
   return (
     <div className="home-page-container">
       <header className="header">
         <Logo />
         {token ? (
-          <div>
-            <h2>Welcome {firstName}</h2>
+          <div className="welcome-message">
+            <h3>
+              Welcome <span style={{ color: "blue" }}>{firstName}</span>
+            </h3>
           </div>
         ) : (
           <h2>Welcome to Vacation Paradise</h2>
@@ -77,12 +87,37 @@ const HomePage = () => {
         </div>
       </div>
 
+      <Button
+        style={{
+          marginTop: "100px",
+          position: "relative",
+          marginRight: "11.5px",
+        }}
+        icon="pi pi-chevron-down"
+        className="scroll-button"
+        onClick={() => scrollToSection(reviewSection)}
+      ></Button>
+
+      <span ref={reviewSection as any}></span>
       <div style={{ marginTop: "200px" }}>
+        <Button
+          style={{ bottom: "100px" }}
+          icon="pi pi-chevron-up"
+          className="scroll-button"
+          onClick={() => {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }}
+        ></Button>
         <ReviewList />
-        <div className="add-review-container">
-          <h2>Add Your Review</h2>
-          {/* Add your "Add Review" form or content here */}
-        </div>
+        {token ? (
+          <div className="add-review-container">
+            <h2>Add Your Review</h2>
+            {/* Add your "Add Review" form or content here */}
+          </div>
+        ) : null}
       </div>
     </div>
   )

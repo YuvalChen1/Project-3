@@ -1,40 +1,52 @@
-import React, { useState } from "react";
-import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import { IVacation } from "../../vacations/vacationsAPI";
+import React, { useState } from "react"
+import { Card } from "primereact/card"
+import { Button } from "primereact/button"
+import { IVacation } from "../../vacations/vacationsAPI"
+import { url } from "../../sign-up/signUpAPI"
+import Image from "../../ui-components/image"
 
 interface VacationCardProps {
-  vacation: IVacation;
-  onEdit: Function;
-  onDelete: Function;
+  vacation: IVacation
+  onEdit: Function
+  onDelete: Function
 }
 
 function AdminVacationCard(props: VacationCardProps) {
-  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false)
 
   const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
-  };
+    setShowFullDescription(!showFullDescription)
+  }
+
+  const handleImageError = (
+    event: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
+    event.currentTarget.src = "/src/assets/images/error-img.png"
+  }
 
   return (
-    <Card
-      className="vacation-card"
-      title={props.vacation.destination}
-    >
-      <p>
+    <Card className="vacation-card">
+      <div className="card-image">
+        <img
+          src={`${url}${props.vacation.image}`}
+          alt={props.vacation.destination}
+          onError={handleImageError}
+        />
+        {/* <Image
+          src={`${url}${props.vacation.image}`}
+          alt={props.vacation.destination}
+          errorSrc="/src/assets/images/error-img.png"
+        ></Image> */}
+        <div className="card-title">
+          <h3>{props.vacation.destination}</h3>
+        </div>
+      </div>
+      <p style={{ backgroundColor: "turquoise" }}>
+        {" "}
         <i className="pi pi-calendar"></i> :
         {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
         {new Date(props.vacation.endDate).toLocaleDateString()}
       </p>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <img
-          style={{ borderRadius: "15px" }}
-          width={"400px"}
-          height={"250px"}
-          src={props.vacation.image}
-          alt={props.vacation.destination}
-        />
-      </div>
       <div className="description" onClick={toggleDescription}>
         {showFullDescription ? (
           <p>{props.vacation.description}</p>
@@ -54,7 +66,7 @@ function AdminVacationCard(props: VacationCardProps) {
           label={"Edit"}
           icon={"pi pi-file-edit"}
           onClick={() => {
-            props.onEdit(props.vacation.id);
+            props.onEdit(props.vacation.id)
           }}
         />
         <Button
@@ -63,12 +75,12 @@ function AdminVacationCard(props: VacationCardProps) {
           label={"Delete"}
           icon={"pi pi-trash"}
           onClick={() => {
-            props.onDelete(props.vacation.id);
+            props.onDelete(props.vacation.id)
           }}
         />
       </div>
     </Card>
-  );
+  )
 }
 
-export default AdminVacationCard;
+export default AdminVacationCard

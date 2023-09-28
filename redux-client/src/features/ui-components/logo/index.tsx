@@ -11,11 +11,11 @@ export default function Logo() {
       className="bubbly-text"
       style={{
         position: "fixed",
-        left: "50%",
+        left: "51%",
         transform: "translateX(-50%)",
       }}
     >
-      <h2 style={{ position: "relative", left: "40px" }}>
+      <h2 style={{ position: "relative", left: "40px", fontSize:"35px" }}>
         <Link to="/home" style={linkStyle}>
           Trippy{" "}
           <img

@@ -5,6 +5,9 @@ import { addVacationApi } from "./handlers/addVacation";
 import { editVacationByIdApi } from "./handlers/editVacation";
 import { deleteVacationByIdApi } from "./handlers/deleteVacations";
 import { getAllVacationsByUserIdApi } from "./handlers/getAllVacationsByUserId";
+import multer from "multer";
+const path = require("path");
+
 const vacationsRouter = express.Router();
 
 const vacationBody = zod.object({
@@ -40,13 +43,50 @@ function isAdmin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function generateUniqueFilename() {
+  const timestamp = Date.now();
+  const randomString = Math.random().toString(36).substring(2, 15);
+  const uniqueFilename = `${timestamp}-${randomString}`;
+  return uniqueFilename;
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    const uniqueFilename = generateUniqueFilename();
+    cb(null, uniqueFilename + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
+vacationsRouter.post("/upload-image", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No image provided" });
+  }
+  const imageURL = `/uploads/${req.file.filename}`;
+  res.status(200).json(imageURL);
+});
+
 vacationsRouter.post(
   "/new",
   isAdmin,
   async function (req: Request, res: Response, next: NextFunction) {
     try {
-      vacationBody.parse(req.body);
-      await addVacationApi(req.body);
+      const { destination, description, startDate, endDate, price, image } =
+        req.body;
+      const vacationData = {
+        destination,
+        description,
+        startDate,
+        endDate,
+        price,
+        image,
+      };
+      vacationBody.parse(vacationData);
+      await addVacationApi(vacationData);
       res.json({ message: "ok" });
     } catch (error) {
       logger.error(error.message);

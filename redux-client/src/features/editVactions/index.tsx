@@ -8,6 +8,8 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import "./edit.css"
 import { editVacation } from "../adminVacations/adminVacationsSlice"
 import { getVacations } from "../vacations/vacationsSlice"
+import { FileUpload } from "primereact/fileupload"
+import DatePicker from "react-datepicker"
 
 function EditVacation() {
   const vacations = useAppSelector((state) => state.vacations.vacation)
@@ -106,6 +108,34 @@ function EditVacation() {
     }
   }
 
+  const handleImageUpload = async (event: any) => {
+    const formData = new FormData()
+    formData.append("image", event.files[0])
+
+    try {
+      const response = await fetch(
+        "http://localhost:4000/vacations/upload-image",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: localStorage.getItem("token") || "",
+          },
+        },
+      )
+
+      if (response.ok) {
+        const imageURL = await response.json()
+        setImage(imageURL)
+        setImageValid(true)
+      } else {
+        console.error("Image upload failed.")
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error)
+    }
+  }
+
   return (
     <div
       style={{ marginTop: "50px" }}
@@ -151,16 +181,18 @@ function EditVacation() {
           </div>
           <div className="p-field">
             <label htmlFor="startDate">Start Date :</label>
-            <InputText
+            <DatePicker
               id="startDate"
-              type="date"
-              value={startDate ? startDate.toISOString().split("T")[0] : ""}
-              onChange={(e) => {
-                const dateValue = new Date(e.target.value)
-                setStartDate(dateValue)
-                setStartDateValid(!!dateValue)
+              selected={startDate}
+              minDate={new Date()}
+              onChange={(date) => {
+                setStartDate(date)
+                setStartDateValid(!!date)
               }}
-              className={!startDateValid ? "p-invalid" : ""}
+              className={
+                "p-inputtext p-component" + (startDateValid ? "" : " p-invalid")
+              }
+              wrapperClassName="custom-date-picker"
             />
             {!startDateValid && (
               <small className="p-error">Start Date is required.</small>
@@ -168,17 +200,21 @@ function EditVacation() {
           </div>
           <div className="p-field">
             <label htmlFor="endDate">End Date :</label>
-            <InputText
-              id="endDate"
-              type="date"
-              value={endDate ? endDate.toISOString().split("T")[0] : ""}
-              onChange={(e) => {
-                const dateValue = new Date(e.target.value)
-                setEndDate(dateValue)
-                setEndDateValid(!!dateValue)
-              }}
-              className={!endDateValid ? "p-invalid" : ""}
-            />
+            <div>
+              <DatePicker
+                id="endDate"
+                selected={endDate}
+                minDate={new Date()}
+                onChange={(date) => {
+                  setEndDate(date)
+                  setEndDateValid(!!date)
+                }}
+                className={
+                  "p-inputtext p-component" + (endDateValid ? "" : " p-invalid")
+                }
+                wrapperClassName="custom-date-picker"
+              />
+            </div>
             {!endDateValid && (
               <small className="p-error">End Date is required.</small>
             )}
@@ -209,14 +245,15 @@ function EditVacation() {
           </div>
           <div className="p-field">
             <label htmlFor="image">Image :</label>
-            <InputText
+            <FileUpload
               id="image"
-              type="text"
-              value={image}
-              onChange={(e) => {
-                setImage(e.target.value)
-                setImageValid(!!e.target.value)
-              }}
+              mode="advanced"
+              accept="image/*"
+              customUpload={true}
+              emptyTemplate={
+                <p className="m-0">Drag and drop files to here to upload.</p>
+              }
+              uploadHandler={handleImageUpload}
               className={!imageValid ? "p-invalid" : ""}
             />
             {!imageValid && (

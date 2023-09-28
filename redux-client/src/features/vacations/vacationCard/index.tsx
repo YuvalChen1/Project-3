@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Card } from "primereact/card"
 import { Button } from "primereact/button"
 import { IVacation } from "../vacationsAPI"
+import { url } from "../../sign-up/signUpAPI"
 
 interface VacationCardProps {
   vacation: IVacation
@@ -17,27 +18,22 @@ function VacationCard(props: VacationCardProps) {
   }
 
   return (
-    <Card
-      className="vacation-card"
-      // style={{ backgroundColor: "grey", color: "white" }}
-      title={props.vacation.destination}
-    >
+    <Card className="vacation-card">
+      <div className="card-image">
+        <img
+          src={`${url}${props.vacation.image}`}
+          alt={props.vacation.destination}
+        />
+        <div className="card-title">
+          <h3>{props.vacation.destination}</h3>
+        </div>
+      </div>
       <p style={{ backgroundColor: "turquoise" }}>
         {" "}
         <i className="pi pi-calendar"></i> :
         {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
         {new Date(props.vacation.endDate).toLocaleDateString()}
       </p>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        {/* <h3 className="vacation-title">{props.vacation.destination}</h3> */}
-        <img
-          style={{ borderRadius: "15px" }}
-          width={"400px"}
-          height={"250px"}
-          src={props.vacation.image}
-          alt={props.vacation.destination}
-        />
-      </div>
       <div className="description" onClick={toggleDescription}>
         {showFullDescription ? (
           <p>{props.vacation.description}</p>

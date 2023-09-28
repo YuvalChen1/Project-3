@@ -20,12 +20,6 @@ function Login() {
 
   const toast = useRef<Toast | null>(null)
 
-  useEffect(() => {
-    // localStorage.removeItem("token")
-    // localStorage.removeItem("userRecord")
-    // localStorage.removeItem("tokenExpiration")
-  }, [])
-
   const handleEmailChange = (value: string) => {
     setEmail(value)
     setEmailValid(validateEmail(value))
@@ -41,19 +35,18 @@ function Login() {
       try {
         setIsLoading(true)
         const response = await dispatch(loginUser({ email, password }))
+        const userRecord = response?.payload?.userRecord
         if (loginUser.fulfilled.match(response)) {
           localStorage.setItem("token", response.payload.token)
-          localStorage.setItem(
-            "userRecord",
-            JSON.stringify(response.payload.userRecord),
-          )
           localStorage.setItem(
             "tokenExpiration",
             response.payload.tokenExpiration,
           )
-          const role = JSON.parse(
-            localStorage.getItem("userRecord") as any,
-          )?.role
+          localStorage.setItem("userEmail", email)
+          localStorage.setItem("userPassword", password)
+          localStorage.setItem("firstName", userRecord?.firstName)
+          localStorage.setItem("lastName", userRecord?.lastName)
+          const role = userRecord?.role
           if (role === "admin") {
             navigate("/admin-vacations")
           } else {
@@ -68,6 +61,11 @@ function Login() {
           console.error("Login failed:", response.payload)
         }
       } catch (error) {
+        toast.current?.show({
+          severity: "error",
+          summary: "Login Failed",
+          detail: "Login failed. Please try again.",
+        })
         console.error("Login failed:", error)
       } finally {
         setIsLoading(false)

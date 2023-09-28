@@ -6,7 +6,7 @@ import { Card } from "primereact/card"
 import { Toast } from "primereact/toast"
 import { signUpUser } from "./signUpSlice"
 import { Link, useNavigate } from "react-router-dom"
-import "./SignUp.css"
+import "./signUp.css"
 
 function SignUp() {
   const navigate = useNavigate()
@@ -24,12 +24,6 @@ function SignUp() {
   const [isLoading, setIsLoading] = useState(false)
 
   const toast = useRef<Toast | null>(null)
-
-  useEffect(() => {
-    // localStorage.removeItem("token")
-    // localStorage.removeItem("userRecord")
-    // localStorage.removeItem("tokenExpiration")
-  }, [])
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value

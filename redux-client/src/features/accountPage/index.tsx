@@ -9,7 +9,6 @@ import SideNav from "../ui-components/side-nav"
 import LogoutButton from "../ui-components/logout-button"
 
 const AccountPage = () => {
-  const navigate = useNavigate()
   const [isSideNavVisible, setIsSideNavVisible] = useState(false)
 
   const handleShowSideNav = () => {
@@ -21,11 +20,11 @@ const AccountPage = () => {
   }
 
   const userData = {
-    email: JSON.parse(localStorage.getItem("userRecord") as any)?.email,
+    email: localStorage.getItem("userEmail"),
     username:
-      JSON.parse(localStorage.getItem("userRecord") as any)?.firstName +
+      localStorage.getItem("firstName") +
       " " +
-      JSON.parse(localStorage.getItem("userRecord") as any)?.lastName,
+      localStorage.getItem("lastName"),
   }
 
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false)
@@ -68,7 +67,6 @@ const AccountPage = () => {
       <Link to="/home">Back to Home</Link>
 
       <Modal isOpen={isChangePasswordOpen} onClose={handleCloseChangePassword}>
-        {/* Render the ChangePasswordForm inside the modal */}
         <ChangePasswordForm />
       </Modal>
     </div>

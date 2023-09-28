@@ -83,8 +83,6 @@ const VacationChart: React.FC = () => {
       "vacation-chart",
     ) as HTMLCanvasElement | null
 
-    console.log(vacations.length)
-
     if (canvasElement && !isLoading && vacations.length > 1) {
       chartRef.current = new Chart(canvasElement, {
         type: "bar",

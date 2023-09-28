@@ -1,14 +1,13 @@
 import React from "react"
 import { Button } from "primereact/button"
 import { useNavigate } from "react-router-dom"
+import clearLocalStorage from "../../functions/localStorageClear"
 
 const LogoutButton = () => {
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("userRecord")
-    localStorage.removeItem("tokenExpiration")
+    clearLocalStorage()
     navigate("/login")
   }
 
