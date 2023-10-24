@@ -24,6 +24,8 @@ function AdminVacationCard(props: VacationCardProps) {
     event.currentTarget.src = "/src/assets/images/error-img.png"
   }
 
+  const isDescriptionLongEnough = props.vacation.description.length > 200
+
   return (
     <Card className="vacation-card">
       <div className="card-image">
@@ -47,14 +49,21 @@ function AdminVacationCard(props: VacationCardProps) {
         {new Date(props.vacation.startDate).toLocaleDateString()} -{" "}
         {new Date(props.vacation.endDate).toLocaleDateString()}
       </p>
-      <div className="description" onClick={toggleDescription}>
-        {showFullDescription ? (
-          <p>{props.vacation.description}</p>
-        ) : (
-          <p>
-            {props.vacation.description.substring(0, 200)}
-            {props.vacation.description.length > 200 ? "..." : ""}
-          </p>
+      <div className="description">
+        <p>
+          {showFullDescription
+            ? props.vacation.description
+            : props.vacation.description.substring(0, 200) +
+              (props.vacation.description.length > 200 ? "..." : "")}
+        </p>
+        {isDescriptionLongEnough && (
+          <span
+            className="description-toggle"
+            onClick={toggleDescription}
+            style={{ cursor: "pointer" }}
+          >
+            {showFullDescription ? "Show Less" : "Show More"}
+          </span>
         )}
       </div>
       <p>

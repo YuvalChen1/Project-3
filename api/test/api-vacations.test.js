@@ -44,6 +44,8 @@ describe("POST /vacations/new", function () {
     const result = await axios.post(`${url}/vacations/new`, dummyVacation, {
       headers: { authorization: adminToken },
     });
+    const query = `DELETE FROM vacations.vacations_table WHERE destination = ?;`;
+    await connection().execute(query, [dummyVacation.destination]);
     expect(result.status).equal(200);
   });
 

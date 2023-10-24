@@ -5,6 +5,7 @@ import { Button } from "primereact/button"
 import { loginUser } from "../../login/loginSlice"
 import { useAppDispatch } from "../../../app/hooks"
 import { Toast } from "primereact/toast"
+import LogoutButton from "../logout-button"
 
 interface SideNavProps {
   visible: boolean
@@ -66,7 +67,11 @@ const SideNav: React.FC<SideNavProps> = ({ visible, onHide }) => {
               "pi pi-file-edit",
             )}
           {token &&
+            role === "user" &&
             renderNavItem("/vacations", "Vacations", "pi pi-map-marker")}
+        </div>
+        <div style={{ marginTop: "50px" }}>
+          {token && <LogoutButton></LogoutButton>}
         </div>
       </Sidebar>
       <Toast ref={toast} />

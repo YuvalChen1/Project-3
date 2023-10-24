@@ -184,7 +184,6 @@ function EditVacation() {
             <DatePicker
               id="startDate"
               selected={startDate}
-              minDate={new Date()}
               onChange={(date) => {
                 setStartDate(date)
                 setStartDateValid(!!date)
@@ -204,7 +203,6 @@ function EditVacation() {
               <DatePicker
                 id="endDate"
                 selected={endDate}
-                minDate={new Date()}
                 onChange={(date) => {
                   setEndDate(date)
                   setEndDateValid(!!date)

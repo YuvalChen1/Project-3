@@ -15,6 +15,7 @@ const LogoutButton = () => {
     <div style={{ marginRight: "42px" }} className="logout-button">
       <Button style={{}} onClick={handleLogout}>
         Log Out
+        <i style={{ marginLeft: "10px" }} className="pi pi-sign-out"></i>
       </Button>
     </div>
   )

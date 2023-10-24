@@ -99,7 +99,7 @@ const VacationChart: React.FC = () => {
   }, [isLoading])
 
   return (
-    <div>
+    <div style={{ marginTop: "100px" }}>
       <h1 style={{ textAlign: "center", marginTop: "50px" }}>Vacations Data</h1>
       <Button
         style={{ marginTop: "20px" }}

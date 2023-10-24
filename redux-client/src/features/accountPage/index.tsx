@@ -6,7 +6,6 @@ import ChangePasswordForm from "../changePWForm"
 import Modal from "../ui-components/modal"
 import { Button } from "primereact/button"
 import SideNav from "../ui-components/side-nav"
-import LogoutButton from "../ui-components/logout-button"
 
 const AccountPage = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(false)
@@ -42,8 +41,7 @@ const AccountPage = () => {
       <header className="header">
         <Logo />
         <h2>Account Information</h2>
-        <div style={{ display: "flex" }}>
-          <LogoutButton></LogoutButton>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <div style={{ position: "fixed", left: "97%" }}>
             <Button
               style={{ borderRadius: "30px", backgroundColor: "#55c2da" }}

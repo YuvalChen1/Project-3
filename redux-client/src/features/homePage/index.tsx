@@ -44,8 +44,7 @@ const HomePage = () => {
           <h2>Welcome to Vacation Paradise</h2>
         )}
         {token ? (
-          <div style={{ display: "flex" }}>
-            <LogoutButton></LogoutButton>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center"  }}>
             <div style={{ position: "fixed", left: "97%" }}>
               <Button
                 style={{ borderRadius: "30px", backgroundColor: "#55c2da" }}
@@ -112,12 +111,11 @@ const HomePage = () => {
           }}
         ></Button>
         <ReviewList />
-        {token ? (
+        {/* {token ? (
           <div className="add-review-container">
             <h2>Add Your Review</h2>
-            {/* Add your "Add Review" form or content here */}
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     </div>
   )

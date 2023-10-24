@@ -23,9 +23,9 @@ const AboutPage = () => {
         <Logo />
         <h2>About Us</h2>
         {token ? (
-          <div style={{ display: "flex" }}>
-            <LogoutButton></LogoutButton>
-          </div>
+          <div
+            style={{ display: "flex", gap: "10px", alignItems: "center" }}
+          ></div>
         ) : null}
         <div style={{ position: "fixed", left: "97%" }}>
           <Button

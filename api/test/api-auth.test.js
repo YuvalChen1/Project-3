@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const axios = require("axios");
+const { connection } = require("./utils");
 
 const url = "http://localhost:4000";
 
@@ -13,6 +14,8 @@ describe("POST /auth/sign-up", function () {
     };
     const result = await axios.post(`${url}/auth/sign-up`, dummyUser);
     expect(result.status).equal(200);
+    const query = `DELETE FROM vacations.users WHERE email = ?;`;
+    await connection().execute(query, [dummyUser.email]);
   });
   it("Create new user With bad request (Password) ", async function () {
     try {
@@ -43,7 +46,10 @@ describe("POST /auth/sign-up", function () {
       await axios.post(`${url}/auth/sign-up`, dummyUser);
       throw new Error("TEST FAILED");
     } catch (error) {
+      const email = JSON.parse(error.config.data).email;
       expect(error?.response.status).equal(500); // returning next to error handler and not 409 directly
+      const query = `DELETE FROM vacations.users WHERE email = ?;`;
+      await connection().execute(query, [email]);
     }
   });
 });

@@ -220,7 +220,6 @@ function App() {
         )}
         <Logo></Logo>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          <div>{isLoggedIn && token && <LogoutButton></LogoutButton>}</div>
           <div style={{ position: "fixed", left: "97%" }}>
             <Button
               style={{ borderRadius: "30px", backgroundColor: "#55c2da" }}
@@ -235,7 +234,10 @@ function App() {
       <div className="main-content">
         <Routes>
           {routes.map((route) => {
-            if (!route.roles || route.roles.includes(role)) {
+            if (
+              (!route.roles || route.roles.includes(role)) &&
+              !(route.key === "vacations" && role === "admin")
+            ) {
               return (
                 <Route
                   key={route.label}
