@@ -6,6 +6,7 @@ import { Card } from "primereact/card"
 import { Toast } from "primereact/toast"
 import { signUpUser } from "./signUpSlice"
 import { Link, useNavigate } from "react-router-dom"
+import validator from "validator"
 import "./signUp.css"
 
 function SignUp() {
@@ -72,7 +73,7 @@ function SignUp() {
           toast.current?.show({
             severity: "error",
             summary: "Sign Up Failed",
-            detail: "User Is Already Exist",
+            detail: "This Email Is Already In Use",
           })
         } else {
           toast.current?.show({
@@ -89,8 +90,7 @@ function SignUp() {
   }
 
   const validateEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return regex.test(email)
+    return validator.isEmail(email)
   }
 
   return (
