@@ -15,6 +15,9 @@ const Footer = () => {
           <a href="https://www.youtube.com">
             <i className="pi pi-youtube"></i>
           </a>
+          <a href="https://github.com/YuvalChen1">
+            <i className="pi pi-github"></i>
+          </a>
         </div>
 
         <div className="contact-info">

@@ -6,6 +6,8 @@ import { editVacationByIdApi } from "./handlers/editVacation";
 import { deleteVacationByIdApi } from "./handlers/deleteVacations";
 import { getAllVacationsByUserIdApi } from "./handlers/getAllVacationsByUserId";
 import multer from "multer";
+import fs from "fs";
+import { getVacationByIdApi } from "./handlers/getVacationById";
 const path = require("path");
 
 const vacationsRouter = express.Router();
@@ -40,6 +42,18 @@ function isAdmin(req: Request, res: Response, next: NextFunction) {
     throw new Error();
   } catch (error) {
     return res.status(403).send();
+  }
+}
+
+async function deleteVacationImage(imageURL: any) {
+  const imagePath = path.join(__dirname, "../", imageURL).replace("\src", "");
+  try {
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+      console.log("Image deleted successfully");
+    }
+  } catch (error) {
+    console.error("Error deleting image:", error);
   }
 }
 
@@ -117,6 +131,9 @@ vacationsRouter.delete(
     try {
       const id = req.query.id;
       if (!id) throw new Error("Invalid Vacation Id");
+      const vacationImage = (await getVacationByIdApi(id)) as any;
+      await deleteVacationImage(vacationImage[0].image);
+
       await deleteVacationByIdApi(id);
       return res
         .status(200)
