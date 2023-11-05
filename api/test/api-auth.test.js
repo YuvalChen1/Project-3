@@ -47,7 +47,7 @@ describe("POST /auth/sign-up", function () {
       throw new Error("TEST FAILED");
     } catch (error) {
       const email = JSON.parse(error.config.data).email;
-      expect(error?.response.status).equal(500); // returning next to error handler and not 409 directly
+      expect(error?.response.status).equal(409); 
       const query = `DELETE FROM vacations.users WHERE email = ?;`;
       await connection().execute(query, [email]);
     }
