@@ -75,7 +75,7 @@ authRouter.post("/sign-up", middlewareSignIn, async function (req, res, next) {
       await signUp(req.body);
       return res.json({ message: "user successfully added!" });
     } else {
-      throw new Error("User Already Exists");
+      return res.status(409).send("User Already Exists");
     }
   } catch (error) {
     logger.error(error.message);

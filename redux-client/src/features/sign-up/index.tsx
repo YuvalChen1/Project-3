@@ -56,7 +56,6 @@ function SignUp() {
       if (emailValid && passwordValid && firstNameValid && lastNameValid) {
         const formData = { email, password, firstName, lastName }
         const responseAction = await dispatch(signUpUser(formData))
-
         if (signUpUser.fulfilled.match(responseAction)) {
           toast.current?.show({
             severity: "success",
@@ -66,6 +65,15 @@ function SignUp() {
           setTimeout(() => {
             navigate("/login")
           }, 1500)
+        } else if (
+          responseAction?.payload?.message ===
+          "Request failed with status code 409"
+        ) {
+          toast.current?.show({
+            severity: "error",
+            summary: "Sign Up Failed",
+            detail: "User Is Already Exist",
+          })
         } else {
           toast.current?.show({
             severity: "error",
