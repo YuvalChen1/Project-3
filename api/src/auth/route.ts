@@ -43,9 +43,9 @@ authRouter.post("/login", middlewareLogin, async function (req, res, next) {
     const { result, userRecord } = await login(email, password);
     if (!result) throw new Error();
     const signedToken = jsonwebtoken.sign(
-      { userName: userRecord.email, id: userRecord.id, role: "admin" },
+      { userName: userRecord.email, id: userRecord.id, role: userRecord.role },
       process.env.SECRET,
-      { expiresIn: "60m" }
+      { expiresIn: "60m"}
     );
     res.json({
       token: signedToken,
